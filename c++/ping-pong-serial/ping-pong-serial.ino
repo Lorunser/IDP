@@ -11,8 +11,37 @@ void setup() {
 }
  
 void loop() {
+}
+
+void serialEvent(){
   while (Serial.available()){
     data = Serial.readString();
-    Serial.println(data);
+    String message = standard_json();
+    transmit(message);
   }
+}
+
+void transmit(String x){
+  Serial.println(x);
+}
+
+void standard_json(){
+  String names[] = ["block", "active"];
+  bool vals[] = [true, false];
+}
+
+void build_json(String var_names[], bool vals[]){
+  //Build a json string based off of given vars 
+  String json_string;
+  json_string = "{";
+  int n = sizeof(vals / vals[0]);
+  
+  for( int i = 0; i < n; i++){
+    json_string = json_string + "'" + var_names[i] + "':'" + vals[i] + "'";
+    if (i < n - 1){
+      json_string = json_string + ",";
+    }
+  }
+
+  json_string = json_string + "}";
 }
