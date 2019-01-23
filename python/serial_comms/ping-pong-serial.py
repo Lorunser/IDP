@@ -3,7 +3,7 @@ import time
 
 
 def run():
-    ArduinoSerial = serial.Serial('com11', 9600) # find right com channel
+    ArduinoSerial = serial.Serial('com9', 9600) # find right com channel
     time.sleep(2) # wait for connection to be established
 
     #print(ArduinoSerial.readline()) #read the serial data and print as a line

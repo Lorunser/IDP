@@ -34,9 +34,7 @@ String build_csv(byte vals[], int n){
   //Build a csv string based off of given vars 
   //"val[0],val[1],val[2]...,val[n-1]"
 
-  String csv_string;
-  //int n = sizeof(vals); //each val is 1 byte
-  
+  String csv_string;  
   for( int i = 0; i < n; i++){
     csv_string = csv_string + String(vals[i]);
     
