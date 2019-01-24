@@ -1,6 +1,7 @@
 import serial #needed for serial
 import time
-from pid import PID
+from utils.pid import PID
+from utils.camera import Camera
 
 def run():
     ArduinoSerial = serial.Serial('com9', 9600) # find right com channel
@@ -12,9 +13,10 @@ def run():
     KD = 1
 
     controller = PID(KP, KI, KD)
+    camera = Camera()
 
     while 1:
-        robot_angle = camera.get_robot_angle()
+        position, robot_angle = camera.get_robot_position()
         desired_angle = 45
         control(ArduinoSerial, controller, robot_angle, desired_angle)
 

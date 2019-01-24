@@ -42,8 +42,8 @@ void motor_control(float dir, float pace) {
   run_motor(right_speed, right_motor);
   run_motor(left_speed, left_motor);
   
-  //feedback to motor
-  Serial.println("(" + String(left_speed) + "," + String(right_speed) + ")");
+  //feedback to pc
+  //Serial.println("(" + String(left_speed) + "," + String(right_speed) + ")");
 }
 
 void run_motor(float motor_speed, Adafruit_DCMotor *motor)
