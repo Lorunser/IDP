@@ -21,7 +21,7 @@ void loop() {
 
 }
 
-void motor_control(float dir, float pace = 1) {
+void motor_control(float dir, float pace) {
   float right_speed, left_speed;
     
   if(dir >= 0){
