@@ -13,7 +13,7 @@ class Camera:
         self.qr_decoder = qr_decoder
         self.return_frame = return_frame
 
-    def get_robot_position(self, robot_position_colour_bounds=np.array([[22, 42], [159, 179]])):
+    def get_robot_position(self, robot_position_colour_bounds=np.array([[41, 70], [159, 179]])):
         """returns position and angle of robot
         (x_coord, y_coord), angle_in_deg"""
         _, frame = self.capture.read()
