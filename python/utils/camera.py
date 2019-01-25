@@ -13,7 +13,7 @@ class Camera:
         self.qr_decoder = qr_decoder
         self.return_frame = return_frame
 
-    def get_robot_position(self, robot_position_colour_bounds=np.array([22, 42], [159, 179])):
+    def get_robot_position(self, robot_position_colour_bounds=np.array([[22, 42], [159, 179]])):
         """returns position and angle of robot
         (x_coord, y_coord), angle_in_deg"""
         _, frame = self.capture.read()
@@ -97,7 +97,10 @@ class Camera:
             else:
                 return position, angle
         else:
-            return None, None
+            if self.return_frame:
+                return None, None, frame
+            else:
+                return None, None
 
     def get_block_coords(self, block_colour_bounds=None):
         """Returns position of blocks as a list of tuples (x, y)"""
@@ -145,3 +148,18 @@ class Camera:
             return blocks, frame
         else:
             return blocks
+
+
+def main():
+    camera = Camera(0, True)
+    while True:
+        blocks, frame = camera.get_block_coords()
+        position, angle, frame2 = camera.get_robot_position()
+        cv2.imshow('frame', frame)
+        cv2.imshow('frame2', frame2)
+        k = cv2.waitKey(5) & 0xFF
+        if k == 27:
+            break
+
+if __name__ == "__main__":
+    main()
