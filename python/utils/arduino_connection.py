@@ -28,7 +28,7 @@ class Arduino_Connection:
         self.serial_connection.write(str.encode(message))
 
     
-    def drive(self, direction, pace):
+    def drive(self, direction, pace, debug=False):
         """Send appropriate motor controls after checking"""
         
         # enforce limits on direction and pace (-1) <-> (1)
@@ -39,6 +39,7 @@ class Arduino_Connection:
             pace = int(pace / abs(pace))
 
         command = str(round(direction, 3)) + "," + str(round(pace, 3))
+        print(command)
         self.send_line(command)
 
 
