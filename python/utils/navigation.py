@@ -23,7 +23,19 @@ class Navigate:
 
     def choose_next_block(self, block_data, reject_blocks):
         """Return the position and relative angle of the next block to navigate to"""
-        raise NotImplementedError
+        for block in block_data:
+            data = block_data[block]
+            print(data)
+            score = 2 * data[2] + 3 * data[3]
+            data.append(score)
+            block_data[block] = data
+            print(score)
+
+        best_block = 0
+        score = block_data[0][4]
+        for block in block_data:
+
+
 
     def add_block_to_rejects(self, blocks, position, angle):
         """Detect rejected block when dropped behind robot and record coordinates"""
@@ -33,7 +45,8 @@ class Navigate:
 def main():
     blocks = [(1,1), (2,1), (4,7)]
     nav = Navigate()
-    nav.calculate_distances_angles(blocks, (0,0), 0)
+    block_data = nav.calculate_distances_angles(blocks, (0,0), 0)
+    nav.choose_next_block(block_data, [])
 
 if __name__ == "__main__":
     main()
