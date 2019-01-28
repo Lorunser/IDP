@@ -13,8 +13,8 @@ class Navigate:
         data = []
         for block in blocks:
             # data = [block[0], block[1]]
-            distance = math.sqrt(((block[0]-position[0])**2)+((block[1]-position[1])**2))
-            angle = math.atan2(block[1]-position[1], block[0]-position[1])
+            distance = math.sqrt(((block[0] - position[0]) ** 2) + ((block[1] - position[1]) ** 2))
+            angle = math.atan2(block[1] - position[1], block[0] - position[1])
             relative_angle = angle - robot_angle
             data = [block[0], block[1], distance, relative_angle]
             block_data[blocks.index(block)] = data
@@ -50,7 +50,7 @@ class Navigate:
 def main():
     blocks = [(1, 1), (2, 1), (4, 7)]
     nav = Navigate()
-    block_data = nav.calculate_distances_angles(blocks, (0,0), 0)
+    block_data = nav.calculate_distances_angles(blocks, (0, 0), 0)
     best_block = nav.choose_next_block(block_data, [])
     print(best_block)
 
