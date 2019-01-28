@@ -25,17 +25,22 @@ class Navigate:
         """Return the position and relative angle of the next block to navigate to"""
         for block in block_data:
             data = block_data[block]
-            print(data)
-            score = 2 * data[2] + 3 * data[3]
+            if block in reject_blocks:
+                score = -1
+            else:
+                score = 2 * data[2] + 3 * data[3]
             data.append(score)
             block_data[block] = data
             print(score)
 
         best_block = 0
-        score = block_data[0][4]
+        best_score = block_data[0][4]
         for block in block_data:
+            if 0 < block_data[block][4] < best_score:
+                best_block = block
+                best_score = block_data[block][4]
 
-
+        return best_block
 
     def add_block_to_rejects(self, blocks, position, angle):
         """Detect rejected block when dropped behind robot and record coordinates"""
@@ -43,10 +48,12 @@ class Navigate:
 
 
 def main():
-    blocks = [(1,1), (2,1), (4,7)]
+    blocks = [(1, 1), (2, 1), (4, 7)]
     nav = Navigate()
     block_data = nav.calculate_distances_angles(blocks, (0,0), 0)
-    nav.choose_next_block(block_data, [])
+    best_block = nav.choose_next_block(block_data, [])
+    print(best_block)
+
 
 if __name__ == "__main__":
     main()
