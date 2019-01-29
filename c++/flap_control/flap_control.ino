@@ -9,6 +9,8 @@ String data;
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *left_motor = AFMS.getMotor(1);
 Adafruit_DCMotor *right_motor = AFMS.getMotor(2);
+Servo *swiper_servo;
+Servo *back_flap_servo;
 
 void setup() {
   // put your setup code here, to run once:
@@ -20,6 +22,15 @@ void loop() {
   // put your main code here, to run repeatedly:
 
 }
+
+
+void swipe() {
+  
+}
+
+
+void open_back_flap()
+
 
 void motor_control(float dir, float pace) {
   float right_speed, left_speed;

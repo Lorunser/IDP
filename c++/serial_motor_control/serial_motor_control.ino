@@ -43,7 +43,7 @@ void motor_control(float dir, float pace) {
   run_motor(left_speed, left_motor);
   
   //feedback to pc
-  Serial.println("(" + String(left_speed) + "," + String(right_speed) + ")");
+  //Serial.println("(" + String(left_speed) + "," + String(right_speed) + ")");
 }
 
 void run_motor(float motor_speed, Adafruit_DCMotor *motor)
@@ -64,13 +64,14 @@ void run_motor(float motor_speed, Adafruit_DCMotor *motor)
 }
 
 void serialEvent() {
+  float dir, pace;
+  int comma_index;
+  
   while (Serial.available()){
-    float dir, pace;
-    int comma_index;
-
     // data format = "dir,pace"
     // -1 < dir < 1 & -1 < pace < 1
-    data = Serial.readString();
+    data = Serial.readStringUntil('&');
+  }
     comma_index = data.indexOf(',');
 
     // extract vals
@@ -79,5 +80,4 @@ void serialEvent() {
 
     // turn motors
     motor_control(dir, pace);
-  }
 }

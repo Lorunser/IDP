@@ -6,17 +6,21 @@ pace = 0
 direction = 0
 STEP = 0.1
 
+arduino = Arduino_Connection(com="com9")
+
 def forwards():
     global pace
     pace += STEP
     if (pace > 1):
         pace = 1
+        print("FULL SPEED AHEAD")
 
 def backwards():
     global pace
     pace -= STEP
     if (pace < -1):
         pace = -1
+        print("BACK IT UP")
     
 
 def rightwards():
@@ -24,6 +28,7 @@ def rightwards():
     direction += STEP
     if (direction > 1):
         direction = 1
+        print("MAX RIGHT")
 
 
 def leftwards():
@@ -31,6 +36,7 @@ def leftwards():
     direction -= STEP
     if (direction < -1):
         direction = -1
+        print("MAX LEFT")
 
 
 def stop():
@@ -38,6 +44,14 @@ def stop():
     global direction
     pace = 0
     direction = 0
+    print("STOP")
+
+
+def send():
+    global arduino
+    global pace
+    global direction
+    arduino.drive(direction, pace, debug=False)
 
 
 def run():
@@ -48,11 +62,12 @@ def run():
 
     keyboard.add_hotkey('space', stop)
 
-    arduino = Arduino_Connection(com="com9")
+    keyboard.add_hotkey('enter', send)
+
 
     while (True):
-        arduino.drive(direction, pace, debug=True)
-        time.sleep(0.1) 
+        send()
+        time.sleep(0.1)
 
 
 if __name__ == "__main__":

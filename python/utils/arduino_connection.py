@@ -25,7 +25,9 @@ class Arduino_Connection:
 
     def send_line(self, message):
         """Send given message over serial"""
-        self.serial_connection.write(str.encode(message))
+        #append terminator '&'
+        message = message + '&'
+        self.serial_connection.write(message.encode('ASCII'))
 
     
     def drive(self, direction, pace, debug=False):
@@ -39,7 +41,10 @@ class Arduino_Connection:
             pace = int(pace / abs(pace))
 
         command = str(round(direction, 3)) + "," + str(round(pace, 3))
-        print(command)
+        
+        if (debug):
+            print(command)
+            
         self.send_line(command)
 
 
