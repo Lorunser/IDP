@@ -11,7 +11,7 @@ class Camera:
         self.capture = cap
         self.return_frame = return_frame
 
-    def get_robot_position(self, robot_position_colour_bounds=np.array([[41, 70], [145, 179], [0, 8], [0, 0]])): # green, pink, orange, yellow
+    def get_robot_position(self, robot_position_colour_bounds=np.array([[41, 70], [145, 179], [11, 23], [25, 39]]), min_block_size=20, max_block_size=50): # green, pink, orange, yellow
         """returns position and angle of robot
         (x_coord, y_coord), angle_in_deg"""
         _, frame = self.capture.read()
@@ -26,11 +26,11 @@ class Camera:
         lower_pink = np.array([robot_position_colour_bounds[1][0], 50, 50])
         upper_pink = np.array([robot_position_colour_bounds[1][1], 255, 255])
 
-        lower_orange = np.array([robot_position_colour_bounds[0][0], 50, 50])
-        upper_orange = np.array([robot_position_colour_bounds[0][1], 255, 255])
+        lower_orange = np.array([robot_position_colour_bounds[2][0], 50, 50])
+        upper_orange = np.array([robot_position_colour_bounds[2][1], 255, 255])
 
-        lower_yellow = np.array([robot_position_colour_bounds[1][0], 50, 50])
-        upper_yellow = np.array([robot_position_colour_bounds[1][1], 255, 255])
+        lower_yellow = np.array([robot_position_colour_bounds[3][0], 50, 50])
+        upper_yellow = np.array([robot_position_colour_bounds[3][1], 255, 255])
 
         # Threshold the HSV image to get only blue colors
         mask_green = cv2.inRange(hsv, lower_green, upper_green)
@@ -87,9 +87,14 @@ class Camera:
         purple_centre_y = 0
         green_centre_x = 0
         green_centre_y = 0
+        orange_centre_x = 0
+        orange_centre_y = 0
+        yellow_centre_x = 0
+        yellow_centre_y = 0
+
         for i in range(len(conts_green)):
             x, y, w, h = cv2.boundingRect(conts_green[i])
-            if 10 < w < 300 and 10 < h < 300:
+            if min_block_size < w < max_block_size and min_block_size < h < max_block_size:
                 green_centre_x = int(x + w / 2)
                 green_centre_y = int(y + h / 2)
                 cv2.circle(frame, (green_centre_x, green_centre_y), 5, (0, 0, 255), 3)
@@ -97,11 +102,27 @@ class Camera:
 
         for i in range(len(conts_purple)):
             x, y, w, h = cv2.boundingRect(conts_purple[i])
-            if 20 < w < 300 and 20 < h < 300:
+            if min_block_size < w < max_block_size and min_block_size < h < max_block_size:
                 purple_centre_x = int(x + w / 2)
                 purple_centre_y = int(y + h / 2)
                 cv2.circle(frame, (purple_centre_x, purple_centre_y), 5, (0, 255, 0), 3)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        for i in range(len(conts_orange)):
+            x, y, w, h = cv2.boundingRect(conts_orange[i])
+            if min_block_size < w < max_block_size and min_block_size < h < max_block_size:
+                orange_centre_x = int(x + w / 2)
+                orange_centre_y = int(y + h / 2)
+                cv2.circle(frame, (orange_centre_x, orange_centre_y), 5, (0, 0, 255), 3)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
+
+        for i in range(len(conts_yellow)):
+            x, y, w, h = cv2.boundingRect(conts_yellow[i])
+            if min_block_size < w < max_block_size and min_block_size < h < max_block_size:
+                yellow_centre_x = int(x + w / 2)
+                yellow_centre_y = int(y + h / 2)
+                cv2.circle(frame, (yellow_centre_x, yellow_centre_y), 5, (0, 255, 0), 3)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
 
         angle = None
         position = None
