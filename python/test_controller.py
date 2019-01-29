@@ -18,7 +18,7 @@ def run():
 
     while 1:
         position, robot_angle = camera.get_robot_position()
-        desired_angle = 45
+        desired_angle = 0
         control(arduino, controller, robot_angle, desired_angle)
 
         time.sleep(0.1)
