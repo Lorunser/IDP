@@ -11,7 +11,7 @@ class Camera:
         self.capture = cap
         self.return_frame = return_frame
 
-    def get_robot_position(self, robot_position_colour_bounds=np.array([[41, 70], [145, 179], [11, 23], [25, 39]]), min_block_size=20, max_block_size=50): # green, pink, orange, yellow
+    def get_robot_position(self, robot_position_colour_bounds=np.array([[37, 70], [145, 179], [11, 23], [25, 36]]), min_block_size=10, max_block_size=50): # green, pink, orange, yellow
         """returns position and angle of robot
         (x_coord, y_coord), angle_in_deg"""
         _, frame = self.capture.read()

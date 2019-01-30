@@ -73,7 +73,10 @@ class PID:
            Test PID with Kp=1.2, Ki=1, Kd=0.001 (test_pid.py)
 
         """
-        error = self.SetPoint - feedback_value
+        if feedback_value is not None:
+            error = self.SetPoint - feedback_value
+        else:
+            return self.output
 
         self.current_time = time.time()
         delta_time = self.current_time - self.last_time

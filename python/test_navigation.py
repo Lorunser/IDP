@@ -3,7 +3,7 @@ from utils.navigation import Navigate
 import cv2
 
 def main():
-    camera = Camera(0, True)
+    camera = Camera(1, True)
     while True:
         blocks, frame = camera.get_block_coords()
         position, angle, frame2 = camera.get_robot_position()
