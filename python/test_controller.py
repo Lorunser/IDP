@@ -9,9 +9,9 @@ def run():
     arduino = Arduino_Connection(com="com19") # find right com channel
 
     #setup controller
-    KP = 1
+    KP = 0.75
     KI = 0
-    KD = 1
+    KD = 0.5
 
     controller = PID(KP, KI, KD)
     camera = Camera(webcam_number=1, return_frame=True)
@@ -29,10 +29,10 @@ def run():
             break
 
 
-def control(arduino, controller, robot_angle, desired_angle):
+def control(arduino, controller, robot_angle, desired_angle, debug=False):
     controller.setSetPoint(desired_angle)
     direction = controller.update(robot_angle)
-    pace = 0.5
+    pace = 1
     arduino.drive(direction, pace, debug=True)
     if debug:
         print(direction)
