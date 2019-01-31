@@ -27,7 +27,7 @@ void setup() {
   pinMode(ACTIVITY_PIN, INPUT);
 
   //attach interrupts
-  attachInterrupt(digitalPinToInterrupt(BLOCK_PIN), interrupt_block_detected, HIGH);
+  attachInterrupt(digitalPinToInterrupt(BLOCK_PIN), interrupt_block_detected, CHANGE);
 }
 
 
@@ -52,5 +52,6 @@ void interrupt_block_detected(){
   //block_present = true;
   //block_active = digitalRead(ACTIVITY_PIN);
   //digitalWrite(LED_PIN, HIGH);
+  Serial.println("DETECTED");
   
 }
