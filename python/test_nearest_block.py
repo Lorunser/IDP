@@ -3,6 +3,7 @@ import time
 from utils.pid import PID
 from utils.camera import Camera
 from utils.arduino_connection import Arduino_Connection
+from utils.navigation import Navigate
 import cv2
 
 def run():
@@ -16,16 +17,25 @@ def run():
     controller = PID(KP, KI, KD)
     camera = Camera(webcam_number=1, return_frame=True)
     position, robot_angle, frame = camera.get_robot_position()
-    blocks, blocks_frame = camera.get_block_coords()
-	nav = Navigate()
-    block_data = nav.calculate_distances_angles(blocks, (0, 0), 0)
-    best_block = nav.choose_next_block(block_data, [])
+    
     cv2.imshow('frame', frame)
+    
     while 1:
         position, robot_angle, frame = camera.get_robot_position()
+        blocks, blocks_frame = camera.get_block_coords([93, 114])
+        cv2.imshow('blocks frame', blocks_frame)
+        nav = Navigate()
+        if blocks and position:
+            block_data = nav.calculate_distances_angles(blocks, position, robot_angle)
+            best_block = nav.choose_next_block(block_data, [])
+			#print("best")
+            print(block_data[best_block][3])
+            cv2.circle(blocks_frame, (int(block_data[best_block][0]), int(block_data[best_block][1])), 5, (255,0,0), 3)
+            
         cv2.imshow('frame', frame)
-        desired_angle = 0
-        control(arduino, controller, robot_angle, desired_angle, debug=True)
+        if block_data and robot_angle:
+            desired_angle = block_data[best_block][3] + robot_angle
+            control(arduino, controller, robot_angle, desired_angle, debug=True)
 
         time.sleep(0.1)
         k = cv2.waitKey(5) & 0xFF
