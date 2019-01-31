@@ -1,4 +1,3 @@
-import serial #needed for serial
 import time
 from utils.arduino_connection import Arduino_Connection
 
