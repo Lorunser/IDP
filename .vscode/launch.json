@@ -5,52 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File (Integrated Terminal)",
+            "name": "Python",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Python: Current File (External Terminal)",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "externalTerminal"
-        },
-        {
-            "name": "Arduino",
-            "type": "arduino",
-            "request": "launch",
+            "stopOnEntry": false,
+            "pythonPath": "C:/Users/ltray/AppData/Local/Programs/Python/Python36-32/python.exe",
             "program": "${file}",
             "cwd": "${workspaceFolder}",
-            "MIMode": "gdb",
-            "targetArchitecture": "arm",
-            "miDebuggerPath": "",
-            "debugServerPath": "",
-            "debugServerArgs": "",
-            "customLaunchSetupCommands": [
-                {
-                    "text": "target remote localhost:3333"
-                },
-                {
-                    "text": "file \"${file}\""
-                },
-                {
-                    "text": "load"
-                },
-                {
-                    "text": "monitor reset halt"
-                },
-                {
-                    "text": "monitor reset init"
-                }
-            ],
-            "stopAtEntry": true,
-            "serverStarted": "Info\\ :\\ [\\w\\d\\.]*:\\ hardware",
-            "launchCompleteCommand": "exec-continue",
-            "filterStderr": true,
-            "args": []
+            "env": {},
+            "envFile": "${workspaceFolder}/.env",
+            "debugOptions": [
+                "RedirectOutput"
+            ]
         }
     ]
 }

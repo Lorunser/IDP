@@ -1,4 +1,3 @@
-import serial #needed for serial
 import time
 from utils.arduino_connection import Arduino_Connection
 
@@ -12,8 +11,8 @@ def run():
         arduino.send_line(message)
 
         #receive
-        received = arduino.receive_line()
-        print(received)
+        #received = arduino.receive_line()
+        #print(received)
 
 
 if __name__ == "__main__":
