@@ -18,7 +18,7 @@ void setup() {
   swiper_servo.attach(9);
   back_flap_servo.attach(10);
   
-  for (pos = 0; pos <= 90; pos += 3) { // goes from 0 degrees to 180 degrees
+  /*for (pos = 0; pos <= 90; pos += 3) { // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
     swiper_servo.write(pos);              // tell servo to go to position in variable 'pos'
     back_flap_servo.write(pos);
@@ -29,10 +29,21 @@ void setup() {
     back_flap_servo.write(pos);
     delay(15);                       // waits 15ms for the servo to reach the position
   }
+  */
+  swiper_servo.write(0);
+  back_flap_servo.write(0);
 }
 
 void loop() {
-  
+  swiper_servo.write(0);
+  back_flap_servo.write(0);
+
+  delay(2000);
+
+  //swiper_servo.write(90);
+  //back_flap_servo.write(90);
+
+  delay(1000);
 }
 
 
