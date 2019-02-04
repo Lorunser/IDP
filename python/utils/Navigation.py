@@ -7,6 +7,9 @@ class Navigate:
     def __init__(self):
         self.reject_blocks = []
 
+    def got_to_corner(self, position, robot_angle):
+
+
     def calculate_distances_angles(self, blocks, position, robot_angle):
         """Return array of distances and relative angles"""
         block_data = {}
@@ -21,13 +24,15 @@ class Navigate:
 
         return block_data
 
-    def choose_next_block(self, block_data, reject_blocks):
+    def choose_next_block(self, block_data):
         """Return the position and relative angle of the next block to navigate to"""
         for block in block_data:
             data = block_data[block]
-            if block in reject_blocks:
-                score = -1
-            else:
+            score = 0
+            for reject in self.reject_blocks:
+                if abs(block_data[block][0]-reject[0])<50 and abs(block_data[block][0]-reject[0])<50:
+                    score = -1
+            if score != -1:
                 score = 2 * data[2] + 3 * data[3]
             data.append(score)
             block_data[block] = data
@@ -66,7 +71,7 @@ def main():
     blocks = [(1, 1), (2, 1), (4, 7)]
     nav = Navigate()
     block_data = nav.calculate_distances_angles(blocks, (0, 0), 0)
-    best_block = nav.choose_next_block(block_data, [])
+    best_block = nav.choose_next_block(block_data)
     #print(nav.add_block_to_rejects(block_data, (0,0), 2.3))
     print(best_block)
 
