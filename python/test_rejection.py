@@ -8,14 +8,9 @@ def main():
         blocks, frame = camera.get_block_coords()
         position, angle, frame2 = camera.get_robot_position()
         nav = Navigate()
-        #print(blocks)
         if blocks and position:
             block_data = nav.calculate_distances_angles(blocks, position, angle)
-            best_block = nav.choose_next_block(block_data, [])
-            #print("best")
-            #print(block_data[best_block][3])
-            cv2.circle(frame2, (int(block_data[best_block][0]), int(block_data[best_block][1])), 5, (255,0,0), 3)
-            print(nav.block_in_range(best_block, block_data, position, angle))
+            print(nav.add_block_to_rejects(block_data, position, angle))
         cv2.imshow('frame', frame)
         cv2.imshow('frame2', frame2)
         k = cv2.waitKey(5) & 0xFF
