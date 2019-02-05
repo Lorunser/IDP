@@ -23,6 +23,12 @@ const int FLAP_OPEN = 90;
 const int FLAP_CLOSED = 0;
 const int DELAY_TIME = 500;
 
+//enum constants
+const char NO_BLOCK = '0';
+const char BLOCK_DETECTED = '1';
+const char BLOCK_ACCEPTED = '2';
+const char BLOCK_REJECTED = '3';
+
 //input pins
 const byte MAG_PIN_1 = 2;
 const byte MAG_PIN_2 = 3;
@@ -63,6 +69,9 @@ void loop() {
 //block handling routines
 #pragma region
 void handle_block() {
+  //alert pc
+  relay_info(BLOCK_DETECTED);
+
   bool mag_1 = digitalRead(MAG_PIN_1);
   bool mag_2 = digitalRead(MAG_PIN_2);
   bool mag_active = mag_1 or mag_2;
@@ -75,7 +84,6 @@ void handle_block() {
     accept_block();
   }
 
-  //TODO: send back mag active state
   delay(1000);
   onwards();
 }
@@ -84,12 +92,14 @@ void accept_block() {
   open_swiper();
   inch_forward();
   close_swiper();
+  relay_info(BLOCK_ACCEPTED);
 }
 
 void reject_block() {
   close_swiper();
   inch_forward();
   open_swiper();
+  relay_info(BLOCK_REJECTED);
 }
 #pragma endregion
 
@@ -206,6 +216,10 @@ void run_motor(float motor_speed, Adafruit_DCMotor *motor) {
 
 //serial comms
 #pragma region
+void relay_info(char code){
+  Serial.println(code);
+}
+
 
 void serialEvent() {
   float dir, pace;
