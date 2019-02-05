@@ -4,7 +4,7 @@ import time
 
 class Arduino_Connection:
     """Wrapper class for handling connection methods"""
-
+    
 
     def __init__(self, com="com9", baud_rate=9600):
         self.serial_connection = serial.Serial(com, 9600)
@@ -14,13 +14,12 @@ class Arduino_Connection:
 
     def receive_line(self):
         """Attempts to read a line from serial"""
-        try:
+        if (serial_connection.inWaiting()):
             message = self.serial_connection.readline()
             message = str(message.decode('ASCII'))
             message = message[0:-2]
             return message
-        except:
-            raise ConnectionError("Nothing to receive")
+        return None
 
 
     def send_line(self, message):

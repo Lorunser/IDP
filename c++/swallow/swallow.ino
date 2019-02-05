@@ -48,17 +48,13 @@ void setup() {
   pinMode(RED_LED_FLASHER, OUTPUT);
   pinMode(AMBER_LED_FLASHER, OUTPUT);
 
-  //start driving
-  onwards();
 }
 
 void loop() {
   block_present = digitalRead(LDR_PIN);
-  block_present = false;
 
   if(block_present){
     freeze();
-    delay(1000);
     handle_block();
   }
 }
@@ -79,7 +75,7 @@ void handle_block() {
     accept_block();
   }
 
-  //send back mag active state
+  //TODO: send back mag active state
   delay(1000);
   onwards();
 }
@@ -88,7 +84,6 @@ void accept_block() {
   open_swiper();
   inch_forward();
   close_swiper();
-  //send info to pc
 }
 
 void reject_block() {
