@@ -18,15 +18,19 @@ Servo flap_servo;
 
 //constants
 const int SWIPER_OPEN = 0;
-const int SWIPER_CLOSED = 20;
+const int SWIPER_CLOSED = 40;
 const int FLAP_OPEN = 90;
 const int FLAP_CLOSED = 0;
 const int DELAY_TIME = 500;
 
-//pins
+//input pins
 const byte MAG_PIN_1 = 2;
 const byte MAG_PIN_2 = 3;
 const byte LDR_PIN = 4;
+
+//output pins
+const byte RED_LED_FLASHER = 5;
+const byte AMBER_LED_FLASHER = 6;
 
 void setup() {
   Serial.begin(9600);
@@ -41,12 +45,16 @@ void setup() {
   pinMode(MAG_PIN_2, INPUT);
   pinMode(LDR_PIN, INPUT);
 
+  pinMode(RED_LED_FLASHER, OUTPUT);
+  pinMode(AMBER_LED_FLASHER, OUTPUT);
+
   //start driving
   onwards();
 }
 
 void loop() {
   block_present = digitalRead(LDR_PIN);
+  block_present = false;
 
   if(block_present){
     freeze();
@@ -93,19 +101,27 @@ void reject_block() {
 //servo routines
 #pragma region 
 void open_swiper() {
+  freeze();  
   swiper_servo.write(SWIPER_OPEN);
+  delay(500);
 }
 
 void close_swiper() {
+  freeze();
   swiper_servo.write(SWIPER_CLOSED);
+  delay(500);
 }
 
 void open_flap(){
+  freeze();
   flap_servo.write(FLAP_OPEN);
+  delay(500);
 }
 
 void close_flap(){
+  freeze();
   flap_servo.write(FLAP_CLOSED);
+  delay(500);
 }
 #pragma endregion
 
@@ -117,14 +133,20 @@ void freeze(){
 
   left_motor->run(FORWARD);
   right_motor->run(FORWARD);
+
+  //turn off AMBER_LED
+  digitalWrite(AMBER_LED_FLASHER, LOW);
 }
 
 void onwards(){
-  left_motor->setSpeed(255);
-  right_motor->setSpeed(255);
+  left_motor->setSpeed(100);
+  right_motor->setSpeed(100);
 
   left_motor->run(FORWARD);
   right_motor->run(FORWARD);
+
+  //turn on amber LED
+  digitalWrite(AMBER_LED_FLASHER, HIGH);
 }
 
 void inch_forward(){
@@ -136,7 +158,13 @@ void inch_forward(){
 
 void drive(float dir, float pace) {
   float right_speed, left_speed;
-    
+
+  if(dir < 2.1 and dir > 1.9){
+    open_flap();
+    return;
+  }
+  
+  
   if(dir >= 0){
     right_speed = 1;
     left_speed = 1 - 2 * dir;
@@ -154,6 +182,14 @@ void drive(float dir, float pace) {
   //run motors
   run_motor(right_speed, right_motor);
   run_motor(left_speed, left_motor);
+
+  //set LEDs
+  if(pace == 0){
+    digitalWrite(AMBER_LED_FLASHER, LOW);
+  }
+  else{
+    digitalWrite(AMBER_LED_FLASHER, HIGH);
+  }
 }
 
 void run_motor(float motor_speed, Adafruit_DCMotor *motor) {
@@ -175,6 +211,7 @@ void run_motor(float motor_speed, Adafruit_DCMotor *motor) {
 
 //serial comms
 #pragma region
+
 void serialEvent() {
   float dir, pace;
   int comma_index;
@@ -193,4 +230,5 @@ void serialEvent() {
     // turn motors
     drive(dir, pace);
 }
+
 #pragma endregion
