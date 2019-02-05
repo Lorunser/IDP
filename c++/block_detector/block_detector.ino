@@ -27,24 +27,15 @@ void setup() {
   pinMode(ACTIVITY_PIN, INPUT);
 
   //attach interrupts
-  attachInterrupt(digitalPinToInterrupt(BLOCK_PIN), interrupt_block_detected, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(BLOCK_PIN), interrupt_block_detected, CHANGE);
 }
 
 
 void loop() {
   // put your main code here, to run repeatedly:
   current_millis = millis();
-
-  if (current_millis - previous_millis >= INTERVAL){
-    //save time
-    previous_millis = current_millis;
-
-    //toggle pin
-    led_state = !led_state;
-
-    //send state
-    digitalWrite(LED_PIN, led_state);
-  }
+  block_active = digitalRead(ACTIVITY_PIN);
+  digitalWrite(LED_PIN, block_active);
 }
 
 

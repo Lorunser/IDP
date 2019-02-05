@@ -4,7 +4,9 @@
 #include "utility/Adafruit_MS_PWMServoDriver.h"
 #include <Servo.h>
 
+//variables
 String data;
+bool block_present;
 
 //initialise motors
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
@@ -12,59 +14,149 @@ Adafruit_DCMotor *left_motor = AFMS.getMotor(1);
 Adafruit_DCMotor *right_motor = AFMS.getMotor(2);
 
 Servo swiper_servo;
-Servo back_flap_servo;
+Servo flap_servo;
 
 //constants
-int SWIPER_ANGLE
-int BACK_FLAP_ANGLE
+const int SWIPER_OPEN = 0;
+const int SWIPER_CLOSED = 20;
+const int FLAP_OPEN = 90;
+const int FLAP_CLOSED = 0;
+const int DELAY_TIME = 500;
+
+//pins
+const byte MAG_PIN_1 = 2;
+const byte MAG_PIN_2 = 3;
+const byte LDR_PIN = 4;
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
+
+  //motors
   AFMS.begin();
   swiper_servo.attach(9);
-  back_flap_servo.attach(10);
-  
-  for (pos = 0; pos <= 90; pos += 3) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    swiper_servo.write(pos);              // tell servo to go to position in variable 'pos'
-    back_flap_servo.write(pos);
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-  for (pos = 90; pos >= 0; pos -= 3) { // goes from 180 degrees to 0 degrees
-    swiper_servo.write(pos);              // tell servo to go to position in variable 'pos'
-    back_flap_servo.write(pos);
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
+  flap_servo.attach(10);
+
+  //pins
+  pinMode(MAG_PIN_1, INPUT);
+  pinMode(MAG_PIN_2, INPUT);
+  pinMode(LDR_PIN, INPUT);
+
+  //start driving
+  onwards();
 }
 
 void loop() {
-  
-}
+  block_present = digitalRead(LDR_PIN);
 
-
-void swipe_right() {
-  for (int pos = 0; pos <= SWIPER_ANGLE; pos += 1){
-    swiper_servo.write(pos)
-    delay(15)
-  }
-}
-
-void swipe_left() {
-  for (int pos = SWIPER_ANGLE; pos >= 0; pos -= 1){
-    swiper_servo.write(pos)
-    delay(15)
+  if(block_present){
+    freeze();
+    delay(1000);
+    handle_block();
   }
 }
 
 
-
-void open_back_flap(){
+//block handling routines
+#pragma region
+void handle_block() {
+  bool mag_1 = digitalRead(MAG_PIN_1);
+  bool mag_2 = digitalRead(MAG_PIN_2);
+  bool mag_active = mag_1 or mag_2;
   
+  if (mag_active){
+    reject_block();
+  }
+
+  else {
+    accept_block();
+  }
+
+  //send back mag active state
+  delay(1000);
+  onwards();
 }
 
-void run_motor(float motor_speed, Adafruit_DCMotor *motor)
-{
+void accept_block() {
+  open_swiper();
+  inch_forward();
+  close_swiper();
+  //send info to pc
+}
+
+void reject_block() {
+  close_swiper();
+  inch_forward();
+  open_swiper();
+}
+#pragma endregion
+
+//servo routines
+#pragma region 
+void open_swiper() {
+  swiper_servo.write(SWIPER_OPEN);
+}
+
+void close_swiper() {
+  swiper_servo.write(SWIPER_CLOSED);
+}
+
+void open_flap(){
+  flap_servo.write(FLAP_OPEN);
+}
+
+void close_flap(){
+  flap_servo.write(FLAP_CLOSED);
+}
+#pragma endregion
+
+//driving routines
+#pragma region
+void freeze(){
+  left_motor->setSpeed(0);
+  right_motor->setSpeed(0);
+
+  left_motor->run(FORWARD);
+  right_motor->run(FORWARD);
+}
+
+void onwards(){
+  left_motor->setSpeed(255);
+  right_motor->setSpeed(255);
+
+  left_motor->run(FORWARD);
+  right_motor->run(FORWARD);
+}
+
+void inch_forward(){
+  //forwards and stop
+  onwards();
+  delay(DELAY_TIME);
+  freeze();
+}
+
+void drive(float dir, float pace) {
+  float right_speed, left_speed;
+    
+  if(dir >= 0){
+    right_speed = 1;
+    left_speed = 1 - 2 * dir;
+  }
+
+  else{
+    right_speed = 1 + 2 * dir;
+    left_speed = 1;
+  }
+
+  //set speeds
+  right_speed = right_speed * pace;
+  left_speed = left_speed * pace;
+
+  //run motors
+  run_motor(right_speed, right_motor);
+  run_motor(left_speed, left_motor);
+}
+
+void run_motor(float motor_speed, Adafruit_DCMotor *motor) {
   //-1 < motor_speed < 1 
   int abs_speed = (int)abs(motor_speed * 255);
   
@@ -79,3 +171,26 @@ void run_motor(float motor_speed, Adafruit_DCMotor *motor)
     motor->run(BACKWARD);
   }
 }
+#pragma endregion
+
+//serial comms
+#pragma region
+void serialEvent() {
+  float dir, pace;
+  int comma_index;
+  
+  while (Serial.available()){
+    // data format = "dir,pace"
+    // -1 < dir < 1 & -1 < pace < 1
+    data = Serial.readStringUntil('&');
+  }
+    comma_index = data.indexOf(',');
+
+    // extract vals
+    dir = data.substring(0, comma_index).toFloat();
+    pace = data.substring(comma_index + 1).toFloat();
+
+    // turn motors
+    drive(dir, pace);
+}
+#pragma endregion
