@@ -95,6 +95,9 @@ class Navigate:
         else:
             return False
 
+    def dont_crash(self, arg_str_positional, angle):
+        # if position beyond range 
+
 def main():
     blocks = [(1, 1), (2, 1), (4, 7)]
     nav = Navigate()
