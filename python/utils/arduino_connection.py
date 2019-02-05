@@ -1,10 +1,16 @@
 import serial
 import time
+from enum import Enum
 
+class Block_States(Enum):
+    """Classify data recived from Arduino"""
+    NO_BLOCK = 0
+    BLOCK_DETECTED = 1
+    BLOCK_ACCEPTED = 2
+    BLOCK_REJECTED = 3
 
 class Arduino_Connection:
     """Wrapper class for handling connection methods"""
-    
 
     def __init__(self, com="com9", baud_rate=9600):
         self.serial_connection = serial.Serial(com, 9600)
@@ -19,8 +25,16 @@ class Arduino_Connection:
             message = str(message.decode('ASCII'))
             message = message[0:-2]
             return message
-        return None
+        return "0"
 
+
+    def get_block_state(self):
+        message = receive_line()
+        code = int(message)
+
+        block_state = Block_States()
+        block_state.value = code
+        return block_state
 
     def send_line(self, message):
         """Send given message over serial"""
