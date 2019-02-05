@@ -30,20 +30,19 @@ void setup() {
     delay(15);                       // waits 15ms for the servo to reach the position
   }
   */
-  swiper_servo.write(0);
-  back_flap_servo.write(0);
+  //swiper_servo.write(0);
+  //back_flap_servo.write(0);
 }
 
 void loop() {
-  swiper_servo.write(0);
-  back_flap_servo.write(0);
-
-  delay(2000);
-
-  //swiper_servo.write(90);
-  //back_flap_servo.write(90);
-
-  delay(1000);
+  while(true){
+     swiper_servo.write(0);
+     back_flap_servo.write(0);
+     delay(2000);
+     swiper_servo.write(50);
+     back_flap_servo.write(50);
+     delay(1000); 
+  }
 }
 
 
