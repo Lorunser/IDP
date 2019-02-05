@@ -8,6 +8,34 @@ class Navigate:
         self.reject_blocks = []
 
     def got_to_corner(self, position, robot_angle):
+        if position[0]>1000:
+            desired_angle = 1.57
+            control(arduino, controller, robot_angle, desired_angle)
+            return True
+        else:
+            if position[1] < 50:
+                desired_angle = 0.5
+            elif position[1] > 100:
+                desired_angle = -0.5
+            else:
+                desired_angle = 0
+            control(arduino, controller, robot_angle, desired_angle)
+            return False
+
+    def got_to_line(self, position, robot_angle):
+        if position[1]>300:
+            desired_angle = 1.57
+            control(arduino, controller, robot_angle, desired_angle)
+            return True
+        else:
+            if position[0] < 1000:
+                desired_angle = 1
+            elif position[0] > 1050:
+                desired_angle = 2
+            else:
+                desired_angle = 1.57
+            control(arduino, controller, robot_angle, desired_angle)
+            return False
 
 
     def calculate_distances_angles(self, blocks, position, robot_angle):
