@@ -11,7 +11,7 @@ class Camera:
         self.capture = cap
         self.return_frame = return_frame
 
-    def get_robot_position(self, robot_position_colour_bounds=np.array([[37, 70], [145, 179], [11, 23], [25, 36]]), min_block_size=10, max_block_size=50): # green, pink, orange, yellow
+    def get_robot_position(self, robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 30]]), min_block_size=10, max_block_size=50): # green, pink, orange, yellow
         """returns position and angle of robot
         (x_coord, y_coord), angle_in_deg"""
         _, frame = self.capture.read()
@@ -83,55 +83,122 @@ class Camera:
         conts_yellow, h = cv2.findContours(mask_yellow, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
         # List of coords
-        purple_centre_x = 0
-        purple_centre_y = 0
-        green_centre_x = 0
-        green_centre_y = 0
-        orange_centre_x = 0
-        orange_centre_y = 0
-        yellow_centre_x = 0
-        yellow_centre_y = 0
+        purple_centre_x = []
+        purple_centre_y = []
+        green_centre_x = []
+        green_centre_y = []
+        orange_centre_x = []
+        orange_centre_y = []
+        yellow_centre_x = []
+        yellow_centre_y = []
 
         for i in range(len(conts_green)):
             x, y, w, h = cv2.boundingRect(conts_green[i])
             if min_block_size < w < max_block_size and min_block_size < h < max_block_size:
-                green_centre_x = int(x + w / 2)
-                green_centre_y = int(y + h / 2)
-                cv2.circle(frame, (green_centre_x, green_centre_y), 5, (0, 0, 255), 3)
+                green_centre_x.append(int(x + w / 2))
+                green_centre_y.append(int(y + h / 2))
+                cv2.circle(frame, (green_centre_x[-1], green_centre_y[-1]), 5, (0, 0, 255), 3)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
         for i in range(len(conts_purple)):
             x, y, w, h = cv2.boundingRect(conts_purple[i])
             if min_block_size < w < max_block_size and min_block_size < h < max_block_size:
-                purple_centre_x = int(x + w / 2)
-                purple_centre_y = int(y + h / 2)
-                cv2.circle(frame, (purple_centre_x, purple_centre_y), 5, (0, 255, 0), 3)
+                purple_centre_x.append(int(x + w / 2))
+                purple_centre_y.append(int(y + h / 2))
+                cv2.circle(frame, (purple_centre_x[-1], purple_centre_y[-1]), 5, (0, 255, 0), 3)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         for i in range(len(conts_orange)):
             x, y, w, h = cv2.boundingRect(conts_orange[i])
             if min_block_size < w < max_block_size and min_block_size < h < max_block_size:
-                orange_centre_x = int(x + w / 2)
-                orange_centre_y = int(y + h / 2)
-                cv2.circle(frame, (orange_centre_x, orange_centre_y), 5, (0, 0, 255), 3)
+                orange_centre_x.append(int(x + w / 2))
+                orange_centre_y.append(int(y + h / 2))
+                cv2.circle(frame, (orange_centre_x[-1], orange_centre_y[-1]), 5, (0, 0, 255), 3)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
 
         for i in range(len(conts_yellow)):
             x, y, w, h = cv2.boundingRect(conts_yellow[i])
             if min_block_size < w < max_block_size and min_block_size < h < max_block_size:
-                yellow_centre_x = int(x + w / 2)
-                yellow_centre_y = int(y + h / 2)
-                cv2.circle(frame, (yellow_centre_x, yellow_centre_y), 5, (0, 255, 0), 3)
+                yellow_centre_x.append(int(x + w / 2))
+                yellow_centre_y.append(int(y + h / 2))
+                cv2.circle(frame, (yellow_centre_x[-1], yellow_centre_y[-1]), 5, (0, 255, 0), 3)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
 
         angle = None
         position = None
-        if purple_centre_x > 0 and green_centre_x > 0:
-            angle = math.atan2(purple_centre_y - green_centre_y, purple_centre_x - green_centre_x)
-            # print(angle * 180 / 3.142)
-            position = ((green_centre_x+purple_centre_x)/2, (green_centre_y+purple_centre_y)/2)
+        centres = []
+        angles = []
+        for i in range(len(purple_centre_x)):
+            for j in range(len(green_centre_x)):
+                if 45 < math.sqrt((purple_centre_x[i]-green_centre_x[j])**2+(purple_centre_y[i]-green_centre_y[j])**2) < 75:
+                    midpoint_x = (purple_centre_x[i]+green_centre_x[j])/2
+                    midpoint_y = (purple_centre_y[i]+green_centre_y[j])/2
+                    angle = math.atan2(purple_centre_y[i] - green_centre_y[j], purple_centre_x[i] - green_centre_x[j])
+                    centres.append((midpoint_x-20*math.sin(angle), midpoint_y+20*math.cos(angle)))
+                    angles.append(angle)
+            for j in range(len(orange_centre_x)):
+                if 60 < math.sqrt((purple_centre_x[i]-orange_centre_x[j])**2+(purple_centre_y[i]-orange_centre_y[j])**2) < 90:
+                    midpoint_x = (purple_centre_x[i]+orange_centre_x[j])/2
+                    midpoint_y = (purple_centre_y[i]+orange_centre_y[j])/2
+                    angle = math.atan2(purple_centre_y[i] - orange_centre_y[j], purple_centre_x[i] - orange_centre_x[j]) +0.6
+                    centres.append((midpoint_x, midpoint_y))
+                    angles.append(angle)
+            for j in range(len(yellow_centre_x)):
+                if 25 < math.sqrt((purple_centre_x[i]-yellow_centre_x[j])**2+(purple_centre_y[i]-yellow_centre_y[j])**2) < 55:
+                    midpoint_x = (purple_centre_x[i]+yellow_centre_x[j])/2
+                    midpoint_y = (purple_centre_y[i]+yellow_centre_y[j])/2
+                    angle = math.atan2(purple_centre_y[i] - yellow_centre_y[j], purple_centre_x[i] - yellow_centre_x[j]) + 1.57
+                    centres.append((midpoint_x-30*math.cos(angle), midpoint_y-30*math.sin(angle)))
+                    angles.append(angle)
+        for i in range(len(green_centre_x)):
+            for j in range(len(yellow_centre_x)):
+                if 60 < math.sqrt((green_centre_x[i]-yellow_centre_x[j])**2+(green_centre_y[i]-yellow_centre_y[j])**2) < 90:
+                    midpoint_x = (green_centre_x[i]+yellow_centre_x[j])/2
+                    midpoint_y = (green_centre_y[i]+yellow_centre_y[j])/2
+                    angle = math.atan2(green_centre_y[i] - yellow_centre_y[j], green_centre_x[i] - yellow_centre_x[j])
+                    centres.append((midpoint_x, midpoint_y))
+                    angles.append(angle)
+            for j in range(len(orange_centre_x)):
+                if 25 < math.sqrt((green_centre_x[i]-orange_centre_x[j])**2+(green_centre_y[i]-orange_centre_y[j])**2) < 55:
+                    midpoint_x = (green_centre_x[i]+orange_centre_x[j])/2
+                    midpoint_y = (green_centre_y[i]+orange_centre_y[j])/2
+                    angle = math.atan2(green_centre_y[i] - orange_centre_y[j], green_centre_x[i] - orange_centre_x[j]) + 1.57
+                    centres.append((midpoint_x+30*math.cos(angle), midpoint_y+30*math.sin(angle)))
+                    angles.append(angle)
+        for i in range(len(yellow_centre_x)):
+            for j in range(len(orange_centre_x)):
+                if 45 < math.sqrt((yellow_centre_x[i]-orange_centre_x[j])**2+(yellow_centre_y[i]-orange_centre_y[j])**2) < 75:
+                    midpoint_x = (yellow_centre_x[i]+orange_centre_x[j])/2
+                    midpoint_y = (yellow_centre_y[i]+orange_centre_y[j])/2
+                    angle = math.atan2(yellow_centre_y[i] - orange_centre_y[j], yellow_centre_x[i] - orange_centre_x[j])
+                    centres.append((midpoint_x+20*math.sin(angle), midpoint_y-20*math.cos(angle)))
+                    angles.append(angle)
 
-        if angle is not None and position is not None:
+        centres_x = 0
+        centres_y = 0
+        av_angle = 0
+        for centre in centres:
+            cv2.circle(frame, (int(centre[0]), int(centre[1])), 4, (0, 255, 0), 2)
+            centres_x += centre[0]
+            centres_y += centre[1]
+        for angle in angles:
+            av_angle += angle
+        cv2.rectangle(frame, (400,400), (470,450), (255,0,0), 2)
+        
+        if len(centres) > 0:
+            position = (centres_x/len(centres), centres_y/len(centres))
+            angle = av_angle/len(centres)
+            print(angle)
+            cv2.circle(frame, (int(position[0]), int(position[1])), 4, (255, 0, 0), 2)
+        else:
+            position = None
+            angle = None
+        #if purple_centre_x > 0 and green_centre_x > 0:
+        #    angle = math.atan2(purple_centre_y - green_centre_y, purple_centre_x - green_centre_x)
+            # print(angle * 180 / 3.142)
+        #    position = ((green_centre_x+purple_centre_x)/2, (green_centre_y+purple_centre_y)/2)
+
+        if angle and position:
             if self.return_frame:
                 return position, angle, frame
             else:
@@ -191,7 +258,7 @@ class Camera:
 
 
 def main():
-    camera = Camera(0, True)
+    camera = Camera(1, True)
     while True:
         blocks, frame = camera.get_block_coords()
         position, angle, frame2 = camera.get_robot_position()
