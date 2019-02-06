@@ -124,6 +124,8 @@ class Camera:
                 cv2.circle(frame, (yellow_centre_x[-1], yellow_centre_y[-1]), 5, (0, 255, 0), 3)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
 
+
+        # size of robot black sheet: 70x50 pixels
         angle = None
         position = None
         centres = []
@@ -183,7 +185,6 @@ class Camera:
             centres_y += centre[1]
         for angle in angles:
             av_angle += angle
-        cv2.rectangle(frame, (400,400), (470,450), (255,0,0), 2)
         
         if len(centres) > 0:
             position = (centres_x/len(centres), centres_y/len(centres))
@@ -262,6 +263,7 @@ def main():
     while True:
         blocks, frame = camera.get_block_coords()
         position, angle, frame2 = camera.get_robot_position()
+        cv2.rectangle(frame, (25,25), (600,480), (255,0,0), 2)
         cv2.imshow('frame', frame)
         cv2.imshow('frame2', frame2)
         k = cv2.waitKey(5) & 0xFF
