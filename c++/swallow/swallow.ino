@@ -18,10 +18,10 @@ Servo flap_servo;
 
 //constants
 const int SWIPER_OPEN = 0;
-const int SWIPER_CLOSED = 40;
-const int FLAP_OPEN = 90;
-const int FLAP_CLOSED = 0;
-const int DELAY_TIME = 500;
+const int SWIPER_CLOSED = 20;
+const int FLAP_OPEN = 170;
+const int FLAP_CLOSED = 80;
+const int DELAY_TIME = 3000;
 
 //enum constants
 const char NO_BLOCK = '0';
@@ -54,15 +54,27 @@ void setup() {
   pinMode(RED_LED_FLASHER, OUTPUT);
   pinMode(AMBER_LED_FLASHER, OUTPUT);
 
+  //initialise swipers
+  close_swiper();
+  close_flap();
+
 }
 
 void loop() {
-  block_present = digitalRead(LDR_PIN);
+  bool block_present = digitalRead(LDR_PIN);
 
   if(block_present){
     freeze();
     handle_block();
   }
+/*
+  while(true){
+    open_swiper();
+    close_swiper();
+    open_flap();
+    close_flap();
+  }
+  */
 }
 
 
@@ -72,9 +84,23 @@ void handle_block() {
   //alert pc
   relay_info(BLOCK_DETECTED);
 
-  bool mag_1 = digitalRead(MAG_PIN_1);
-  bool mag_2 = digitalRead(MAG_PIN_2);
-  bool mag_active = mag_1 or mag_2;
+  bool mag_1, mag_2;
+  bool mag_active = false;
+
+  int step_time = 50;
+  for(int i = 0; i < 3; i += 1){    
+    mag_1 = digitalRead(MAG_PIN_1);
+    mag_2 = digitalRead(MAG_PIN_2);
+
+    if(mag_1 or mag_2);
+    {
+      mag_active = true;
+    }
+
+    //move on and check again
+    inch_forward(step_time);
+    delay(step_time * 10);
+  }
   
   if (mag_active){
     reject_block();
@@ -90,14 +116,14 @@ void handle_block() {
 
 void accept_block() {
   open_swiper();
-  inch_forward();
+  inch_forward(DELAY_TIME);
   close_swiper();
   relay_info(BLOCK_ACCEPTED);
 }
 
 void reject_block() {
   close_swiper();
-  inch_forward();
+  inch_forward(DELAY_TIME);
   open_swiper();
   relay_info(BLOCK_REJECTED);
 }
@@ -154,10 +180,10 @@ void onwards(){
   digitalWrite(AMBER_LED_FLASHER, HIGH);
 }
 
-void inch_forward(){
+void inch_forward(int delay_time){
   //forwards and stop
   onwards();
-  delay(DELAY_TIME);
+  delay(delay_time);
   freeze();
 }
 

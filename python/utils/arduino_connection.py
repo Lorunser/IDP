@@ -20,12 +20,14 @@ class Arduino_Connection:
 
     def receive_line(self):
         """Attempts to read a line from serial"""
+        message = "0"
+
         if (serial_connection.inWaiting()):
             message = self.serial_connection.readline()
             message = str(message.decode('ASCII'))
             message = message[0:-2]
-            return message
-        return "0"
+
+        
 
 
     def get_block_state(self):
