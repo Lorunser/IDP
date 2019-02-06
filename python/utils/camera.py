@@ -130,63 +130,66 @@ class Camera:
         angles = []
         for i in range(len(purple_centre_x)):
             for j in range(len(green_centre_x)):
-                if 20 < math.sqrt((purple_centre_x[i]-green_centre_x[j])**2+(purple_centre_y[i]-green_centre_y[j])**2) < 60:
+                if 45 < math.sqrt((purple_centre_x[i]-green_centre_x[j])**2+(purple_centre_y[i]-green_centre_y[j])**2) < 75:
                     midpoint_x = (purple_centre_x[i]+green_centre_x[j])/2
                     midpoint_y = (purple_centre_y[i]+green_centre_y[j])/2
                     angle = math.atan2(purple_centre_y[i] - green_centre_y[j], purple_centre_x[i] - green_centre_x[j])
-                    centres.append((midpoint_x-50*math.sin(angle), midpoint_y-50*math.sin(angle)))
+                    centres.append((midpoint_x-20*math.sin(angle), midpoint_y+20*math.cos(angle)))
                     angles.append(angle)
             for j in range(len(orange_centre_x)):
-                if 20 < math.sqrt((purple_centre_x[i]-orange_centre_x[j])**2+(purple_centre_y[i]-orange_centre_y[j])**2) < 60:
+                if 60 < math.sqrt((purple_centre_x[i]-orange_centre_x[j])**2+(purple_centre_y[i]-orange_centre_y[j])**2) < 90:
                     midpoint_x = (purple_centre_x[i]+orange_centre_x[j])/2
                     midpoint_y = (purple_centre_y[i]+orange_centre_y[j])/2
-                    angle = math.atan2(purple_centre_y[i] - orange_centre_y[j], purple_centre_x[i] - orange_centre_x[j])
-                    centres.append((midpoint_x-50*math.sin(angle), midpoint_y-50*math.sin(angle)))
+                    angle = math.atan2(purple_centre_y[i] - orange_centre_y[j], purple_centre_x[i] - orange_centre_x[j]) +0.6
+                    centres.append((midpoint_x, midpoint_y))
                     angles.append(angle)
             for j in range(len(yellow_centre_x)):
-                if 20 < math.sqrt((purple_centre_x[i]-yellow_centre_x[j])**2+(purple_centre_y[i]-yellow_centre_y[j])**2) < 60:
+                if 25 < math.sqrt((purple_centre_x[i]-yellow_centre_x[j])**2+(purple_centre_y[i]-yellow_centre_y[j])**2) < 55:
                     midpoint_x = (purple_centre_x[i]+yellow_centre_x[j])/2
                     midpoint_y = (purple_centre_y[i]+yellow_centre_y[j])/2
-                    angle = math.atan2(purple_centre_y[i] - yellow_centre_y[j], purple_centre_x[i] - yellow_centre_x[j])
-                    centres.append((midpoint_x-50*math.sin(angle), midpoint_y-50*math.sin(angle)))
+                    angle = math.atan2(purple_centre_y[i] - yellow_centre_y[j], purple_centre_x[i] - yellow_centre_x[j]) + 1.57
+                    centres.append((midpoint_x-30*math.cos(angle), midpoint_y-30*math.sin(angle)))
                     angles.append(angle)
         for i in range(len(green_centre_x)):
             for j in range(len(yellow_centre_x)):
-                if 20 < math.sqrt((green_centre_x[i]-yellow_centre_x[j])**2+(green_centre_y[i]-yellow_centre_y[j])**2) < 60:
+                if 60 < math.sqrt((green_centre_x[i]-yellow_centre_x[j])**2+(green_centre_y[i]-yellow_centre_y[j])**2) < 90:
                     midpoint_x = (green_centre_x[i]+yellow_centre_x[j])/2
                     midpoint_y = (green_centre_y[i]+yellow_centre_y[j])/2
                     angle = math.atan2(green_centre_y[i] - yellow_centre_y[j], green_centre_x[i] - yellow_centre_x[j])
-                    centres.append((midpoint_x-50*math.sin(angle), midpoint_y-50*math.sin(angle)))
+                    centres.append((midpoint_x, midpoint_y))
                     angles.append(angle)
             for j in range(len(orange_centre_x)):
-                if 20 < math.sqrt((green_centre_x[i]-orange_centre_x[j])**2+(green_centre_y[i]-orange_centre_y[j])**2) < 60:
+                if 25 < math.sqrt((green_centre_x[i]-orange_centre_x[j])**2+(green_centre_y[i]-orange_centre_y[j])**2) < 55:
                     midpoint_x = (green_centre_x[i]+orange_centre_x[j])/2
                     midpoint_y = (green_centre_y[i]+orange_centre_y[j])/2
-                    angle = math.atan2(green_centre_y[i] - orange_centre_y[j], green_centre_x[i] - orange_centre_x[j])
-                    centres.append((midpoint_x-50*math.sin(angle), midpoint_y-50*math.sin(angle)))
+                    angle = math.atan2(green_centre_y[i] - orange_centre_y[j], green_centre_x[i] - orange_centre_x[j]) + 1.57
+                    centres.append((midpoint_x+30*math.cos(angle), midpoint_y+30*math.sin(angle)))
                     angles.append(angle)
         for i in range(len(yellow_centre_x)):
             for j in range(len(orange_centre_x)):
-                if 20 < math.sqrt((yellow_centre_x[i]-orange_centre_x[j])**2+(yellow_centre_y[i]-orange_centre_y[j])**2) < 60:
+                if 45 < math.sqrt((yellow_centre_x[i]-orange_centre_x[j])**2+(yellow_centre_y[i]-orange_centre_y[j])**2) < 75:
                     midpoint_x = (yellow_centre_x[i]+orange_centre_x[j])/2
                     midpoint_y = (yellow_centre_y[i]+orange_centre_y[j])/2
                     angle = math.atan2(yellow_centre_y[i] - orange_centre_y[j], yellow_centre_x[i] - orange_centre_x[j])
-                    centres.append((midpoint_x-50*math.sin(angle), midpoint_y-50*math.sin(angle)))
+                    centres.append((midpoint_x+20*math.sin(angle), midpoint_y-20*math.cos(angle)))
                     angles.append(angle)
 
         centres_x = 0
         centres_y = 0
         av_angle = 0
         for centre in centres:
-            #cv2.circle(frame, (centre[0], purple_centre_y[-1]), 5, (0, 255, 0), 3)
+            cv2.circle(frame, (int(centre[0]), int(centre[1])), 4, (0, 255, 0), 2)
             centres_x += centre[0]
             centres_y += centre[1]
         for angle in angles:
             av_angle += angle
+        cv2.rectangle(frame, (400,400), (470,450), (255,0,0), 2)
         
         if len(centres) > 0:
             position = (centres_x/len(centres), centres_y/len(centres))
             angle = av_angle/len(centres)
+            print(angle)
+            cv2.circle(frame, (int(position[0]), int(position[1])), 4, (255, 0, 0), 2)
         else:
             position = None
             angle = None
