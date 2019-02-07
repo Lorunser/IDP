@@ -62,7 +62,7 @@ def run():
             desired_angle = block_data[best_block][3] + robot_angle
             control(arduino, controller, robot_angle, desired_angle, debug=True)
 
-        # if block detected, do something
+        
 
         time.sleep(0.1)
         k = cv2.waitKey(5) & 0xFF
