@@ -18,10 +18,10 @@ Servo flap_servo;
 
 //constants
 const int SWIPER_OPEN = 0;
-const int SWIPER_CLOSED = 20;
-const int FLAP_OPEN = 170;
+const int SWIPER_CLOSED = 25;
+const int FLAP_OPEN = 180;
 const int FLAP_CLOSED = 80;
-const int DELAY_TIME = 3000;
+const int DELAY_TIME = 1500;
 
 //enum constants
 const char NO_BLOCK = '0';
@@ -87,6 +87,12 @@ void handle_block() {
   bool mag_1, mag_2;
   bool mag_active = false;
 
+  //comment out if necessary
+  mag_1 = digitalRead(MAG_PIN_1);
+  mag_2 = digitalRead(MAG_PIN_2);
+  mag_active = mag_1 or mag_2;
+
+/*
   int step_time = 50;
   for(int i = 0; i < 3; i += 1){    
     mag_1 = digitalRead(MAG_PIN_1);
@@ -101,6 +107,7 @@ void handle_block() {
     inch_forward(step_time);
     delay(step_time * 10);
   }
+  */
   
   if (mag_active){
     reject_block();

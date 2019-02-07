@@ -27,8 +27,6 @@ class Arduino_Connection:
             message = str(message.decode('ASCII'))
             message = message[0:-2]
 
-        
-
 
     def get_block_state(self):
         message = receive_line()
@@ -37,6 +35,7 @@ class Arduino_Connection:
         block_state = Block_States()
         block_state.value = code
         return block_state
+
 
     def send_line(self, message):
         """Send given message over serial"""

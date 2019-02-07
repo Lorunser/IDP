@@ -95,7 +95,7 @@ class Navigate:
         else:
             return False
 
-    def dont_crash(self, arg_str_positional, angle):
+#    def dont_crash(self, arg_str_positional, angle):
         # if position beyond range 
 
 def main():
