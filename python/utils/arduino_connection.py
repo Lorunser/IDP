@@ -23,7 +23,7 @@ class Arduino_Connection:
         """Attempts to read a line from serial"""
         message = "0"
 
-        if (serial_connection.inWaiting()):
+        if (self.serial_connection.inWaiting()):
             message = self.serial_connection.readline()
             message = str(message.decode('ASCII'))
             message = message[0:-2]
@@ -32,11 +32,10 @@ class Arduino_Connection:
 
 
     def get_block_state(self):
-        message = receive_line()
+        message = self.receive_line()
         code = int(message)
 
-        block_state = Block_States()
-        block_state.value = code
+        block_state = Block_States(code)
         return block_state
 
 

@@ -17,10 +17,10 @@ Servo swiper_servo;
 Servo flap_servo;
 
 //constants
-const int SWIPER_OPEN = 0;
-const int SWIPER_CLOSED = 25;
+const int SWIPER_OPEN = 15;
+const int SWIPER_CLOSED = 40;
 const int FLAP_OPEN = 180;
-const int FLAP_CLOSED = 80;
+const int FLAP_CLOSED = 50;
 const int DELAY_TIME = 1500;
 
 //enum constants
@@ -37,6 +37,7 @@ const byte LDR_PIN = 4;
 //output pins
 const byte RED_LED_FLASHER = 5;
 const byte AMBER_LED_FLASHER = 6;
+
 
 void setup() {
   Serial.begin(9600);
@@ -58,6 +59,8 @@ void setup() {
   close_swiper();
   close_flap();
 
+  digitalWrite(RED_LED_FLASHER, HIGH);
+
 }
 
 void loop() {
@@ -67,7 +70,8 @@ void loop() {
     freeze();
     handle_block();
   }
-/*
+
+  /*
   while(true){
     open_swiper();
     close_swiper();
@@ -75,6 +79,7 @@ void loop() {
     close_flap();
   }
   */
+
 }
 
 
@@ -126,6 +131,7 @@ void accept_block() {
   inch_forward(DELAY_TIME);
   close_swiper();
   relay_info(BLOCK_ACCEPTED);
+  digitalWrite(RED_LED_FLASHER, HIGH);
 }
 
 void reject_block() {
@@ -154,6 +160,7 @@ void open_flap(){
   freeze();
   flap_servo.write(FLAP_OPEN);
   delay(500);
+  digitalWrite(RED_LED_FLASHER, LOW);
 }
 
 void close_flap(){
