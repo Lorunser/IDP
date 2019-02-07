@@ -8,6 +8,7 @@ class Block_States(Enum):
     BLOCK_DETECTED = 1
     BLOCK_ACCEPTED = 2
     BLOCK_REJECTED = 3
+    
 
 class Arduino_Connection:
     """Wrapper class for handling connection methods"""
@@ -26,6 +27,8 @@ class Arduino_Connection:
             message = self.serial_connection.readline()
             message = str(message.decode('ASCII'))
             message = message[0:-2]
+        
+        return message
 
 
     def get_block_state(self):
