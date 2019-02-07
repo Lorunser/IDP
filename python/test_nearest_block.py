@@ -5,6 +5,7 @@ from utils.camera import Camera
 from utils.arduino_connection import Arduino_Connection
 from utils.navigation import Navigate
 import cv2
+import numpy as np
 
 def run():
     arduino = Arduino_Connection(com="com19") # find right com channel
@@ -21,13 +22,14 @@ def run():
     cv2.imshow('frame', frame)
     
     while 1:
-        position, robot_angle, frame = camera.get_robot_position()
-        blocks, blocks_frame = camera.get_block_coords([93, 114])
+        position, robot_angle, frame = camera.get_robot_position(robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+        blocks, blocks_frame = camera.get_block_coords([91, 114])
         cv2.imshow('blocks frame', blocks_frame)
         nav = Navigate()
+        block_data = None
         if blocks and position:
             block_data = nav.calculate_distances_angles(blocks, position, robot_angle)
-            best_block = nav.choose_next_block(block_data, [])
+            best_block = nav.choose_next_block(block_data)
 			#print("best")
             print(block_data[best_block][3])
             cv2.circle(blocks_frame, (int(block_data[best_block][0]), int(block_data[best_block][1])), 5, (255,0,0), 3)
