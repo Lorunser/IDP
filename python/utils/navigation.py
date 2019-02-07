@@ -7,6 +7,14 @@ class Navigate:
     def __init__(self):
         self.reject_blocks = []
 
+    def go_to_point(self, position, robot_angle, point):
+        distance = math.sqrt((point[0]-position[0])**2 + (point[1]-position[1])**2)
+        if distance > 30:
+            relative_angle = robot_angle - math.atan2(point[1] - position[1], point[0] - position[0])
+            return relative_angle, False
+        else:
+            return True
+
     def got_to_corner(self, position, robot_angle):
         if position[0]>1000:
             desired_angle = 1.57
@@ -36,6 +44,15 @@ class Navigate:
                 desired_angle = 1.57
             control(arduino, controller, robot_angle, desired_angle)
             return False
+
+    def blocks_left(self, block_data):
+        for block in blocks:
+            for reject in self.reject_blocks:
+                distance = math.sqrt((block_data[block][0]-reject[0])**2 + (block_data[block][1]-reject[1])**2)
+                if distance > 40:
+                    return True
+                
+        return False             
 
 
     def calculate_distances_angles(self, blocks, position, robot_angle):
@@ -95,7 +112,7 @@ class Navigate:
         else:
             return False
 
-    def dont_crash(self, arg_str_positional, angle):
+#    def dont_crash(self, arg_str_positional, angle):
         # if position beyond range 
 
 def main():
