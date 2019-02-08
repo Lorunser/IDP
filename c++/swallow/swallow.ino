@@ -58,9 +58,6 @@ void setup() {
   //initialise swipers
   close_swiper();
   close_flap();
-
-  digitalWrite(RED_LED_FLASHER, HIGH);
-
 }
 
 void loop() {
@@ -121,9 +118,6 @@ void handle_block() {
   else {
     accept_block();
   }
-
-  delay(1000);
-  onwards();
 }
 
 void accept_block() {
