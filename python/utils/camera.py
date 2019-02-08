@@ -184,6 +184,8 @@ class Camera:
             centres_x += centre[0]
             centres_y += centre[1]
         for angle in angles:
+            if angle < 0:
+                angle + 2*math.pi
             av_angle += angle
         
         if len(centres) > 0:
@@ -261,10 +263,11 @@ class Camera:
 
 
 def main():
-    camera = Camera(1, True)
+    camera = Camera(0, True)
     while True:
         blocks, frame = camera.get_block_coords()
         position, angle, frame2 = camera.get_robot_position()
+        print(angle)
         cv2.rectangle(frame, (25,25), (600,480), (255,0,0), 2)
         cv2.imshow('frame', frame)
         cv2.imshow('frame2', frame2)
