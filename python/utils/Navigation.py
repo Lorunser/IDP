@@ -15,8 +15,8 @@ class Navigate:
         else:
             return True
 
-    def got_to_corner(self, position, robot_angle):
-        if position[0]>1000:
+    def go_to_corner(self, position, robot_angle):
+        if position[0]>550:
             desired_angle = 1.57
             control(arduino, controller, robot_angle, desired_angle)
             return True
@@ -31,14 +31,14 @@ class Navigate:
             return False
 
     def got_to_line(self, position, robot_angle):
-        if position[1]>300:
+        if position[1]>200:
             desired_angle = 1.57
             control(arduino, controller, robot_angle, desired_angle)
             return True
         else:
-            if position[0] < 1000:
+            if position[0] < 500:
                 desired_angle = 1
-            elif position[0] > 1050:
+            elif position[0] > 600:
                 desired_angle = 2
             else:
                 desired_angle = 1.57
@@ -75,7 +75,7 @@ class Navigate:
             data = block_data[block]
             score = 0
             for reject in self.reject_blocks:
-                if abs(block_data[block][0]-reject[0])<50 and abs(block_data[block][0]-reject[0])<50:
+                if abs(block_data[block][0]-reject[0])<30 and abs(block_data[block][0]-reject[0])<30:
                     score = -1
             if score != -1:
                 score = 2 * data[2] + 3 * data[3]
