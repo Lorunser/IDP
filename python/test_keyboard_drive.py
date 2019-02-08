@@ -6,7 +6,7 @@ pace = 0
 direction = 0
 STEP = 0.1
 
-arduino = Arduino_Connection(com="com9")
+arduino = Arduino_Connection(com="com5")
 
 def forwards():
     global pace
