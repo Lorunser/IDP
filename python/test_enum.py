@@ -3,7 +3,7 @@ from utils.arduino_connection import Block_States
 import time
 
 def run():
-    arduino = Arduino_Connection(com="com9")
+    arduino = Arduino_Connection(com="com19")
 
     while(True):
         block_state = arduino.get_block_state()

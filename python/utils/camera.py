@@ -11,7 +11,7 @@ class Camera:
         self.capture = cap
         self.return_frame = return_frame
 
-    def get_robot_position(self, robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 30]]), min_block_size=10, max_block_size=50): # green, pink, orange, yellow
+    def get_robot_position(self, robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [26, 40]]), min_block_size=10, max_block_size=50): # green, pink, orange, yellow
         """returns position and angle of robot
         (x_coord, y_coord), angle_in_deg"""
         _, frame = self.capture.read()
@@ -218,7 +218,7 @@ class Camera:
         """Returns position of blocks as a list of tuples (x, y)"""
         # Get data from webcam
         if block_colour_bounds is None:
-            block_colour_bounds = [102, 114]
+            block_colour_bounds = [91, 114]
         _, frame = self.capture.read()
 
         # Convert BGR to HSV
@@ -232,7 +232,7 @@ class Camera:
         mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
         # Setup noise reducing variables
-        kernel_open = np.ones((5, 5))
+        kernel_open = np.ones((4, 4))
         kernel_close = np.ones((10, 10))
 
         # Reduce noise

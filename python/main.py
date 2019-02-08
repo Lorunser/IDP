@@ -7,6 +7,14 @@ from utils.navigation import Navigate
 from utils.pick_up_block import pick_up
 import cv2
 import numpy as np
+from enum import Enum
+
+class Block_States(Enum):
+    """Classify data recived from Arduino"""
+    NO_BLOCK = 0
+    BLOCK_DETECTED = 1
+    BLOCK_ACCEPTED = 2
+    BLOCK_REJECTED = 3
 
 def run():
     arduino = Arduino_Connection(com="com19") # find right com channel
@@ -14,7 +22,7 @@ def run():
     #setup controller
     KP = 0.75
     KI = 0
-    KD = 0.5
+    KD = 0.75
 
     controller = PID(KP, KI, KD)
     camera = Camera(webcam_number=1, return_frame=True)
@@ -24,16 +32,68 @@ def run():
     
     cv2.imshow('frame', frame)
 
+    blocks, blocks_frame = camera.get_block_coords()#[95, 105])
+    block_data = navigate.calculate_distances_angles(blocks, position, robot_angle)
+    nav.reject_line(block_data)
+
     corner = False
     while not corner:
-        position, robot_angle, frame = camera.get_robot_position(robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
-        cv2.circle(frame, (100,200), 3, (255, 0, 0), 2)
+        position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+        cv2.circle(frame, (520,60), 3, (255, 0, 0), 2)
         cv2.imshow('frame', frame)
-        print(corner)
+        #print(corner)
         if position:
-            desired_angle, corner = navigate.go_to_point(position, robot_angle, [100, 200])
+            desired_angle, corner = navigate.go_to_point(position, robot_angle, [520, 60])
             if not corner:
-                print(robot_angle)
+                #print(robot_angle)
+                control(arduino, controller, robot_angle, desired_angle)
+        time.sleep(0.1)
+        k = cv2.waitKey(5) & 0xFF
+        if k == 27:
+            break
+
+    top_line = False
+    while not top_line:
+        position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+        cv2.circle(frame, (530,130), 3, (255, 0, 0), 2)
+        cv2.imshow('frame', frame)
+        #print(corner)
+        if position:
+            desired_angle, top_line = navigate.go_to_point(position, robot_angle, [530, 130])
+            if not top_line:
+                #print(robot_angle)
+                control(arduino, controller, robot_angle, desired_angle)
+        time.sleep(0.1)
+        k = cv2.waitKey(5) & 0xFF
+        if k == 27:
+            break
+
+    mid_line = False
+    while not mid_line:
+        position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+        cv2.circle(frame, (530,430), 3, (255, 0, 0), 2)
+        cv2.imshow('frame', frame)
+        #print(corner)
+        if position:
+            desired_angle, mid_line = navigate.go_to_point(position, robot_angle, [530, 280])
+            if not mid_line:
+                #print(robot_angle)
+                control(arduino, controller, robot_angle, desired_angle)
+        time.sleep(0.1)
+        k = cv2.waitKey(5) & 0xFF
+        if k == 27:
+            break
+
+    bottom_line = False
+    while not bottom_line:
+        position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+        cv2.circle(frame, (530,430), 3, (255, 0, 0), 2)
+        cv2.imshow('frame', frame)
+        #print(corner)
+        if position:
+            desired_angle, bottom_line = navigate.go_to_point(position, robot_angle, [530, 430])
+            if not bottom_line:
+                #print(robot_angle)
                 control(arduino, controller, robot_angle, desired_angle)
         time.sleep(0.1)
         k = cv2.waitKey(5) & 0xFF
@@ -44,9 +104,10 @@ def run():
     rejected_blocks = 0
     detect_reject = False
     
+    
     while 1:
-        position, robot_angle, frame = camera.get_robot_position()
-        blocks, blocks_frame = camera.get_block_coords([95, 105])
+        position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+        
         cv2.imshow('blocks frame', blocks_frame)
 
         block_data = None
@@ -67,17 +128,20 @@ def run():
             desired_angle = block_data[best_block][3] + robot_angle
             control(arduino, controller, robot_angle, desired_angle)
 
-        if arduino.get_block_state() != 0:
-            state = arduino.get_block_state()
-            print("state: ")
-            print(state)
-            #if state == 1:
-            #    while state == 1:
-            #        state = arduino.get_block_state()
+        state = arduino.get_block_state()
+        if state != Block_States.NO_BLOCK:
+            #state = arduino.get_block_state()
+            #print("state: ")
+            
+            #print(state)
+                
             if state == 2:
                 accepted_blocks += 1
+                print(state)
+                detect_reject = True
             if state == 3:
                 rejected_blocks += 1
+                print(state)
                 detect_reject = True
 
         if detect_reject:
@@ -92,6 +156,9 @@ def run():
                     desired_angle = relative_angle + robot_angle
                     control(arduino, controller, robot_angle, desired_angle, debug=True)
 
+        for reject in navigate.reject_blocks:
+            print(reject)
+
         time.sleep(0.1)
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
@@ -101,7 +168,7 @@ def run():
 def control(arduino, controller, robot_angle, desired_angle):
     controller.setSetPoint(desired_angle)
     direction = controller.update(robot_angle)
-    pace = 1
+    pace = 0.7
     arduino.drive(direction, pace)
     
     

@@ -62,9 +62,9 @@ class PID:
 
         self.output = 0.0
 
-    def compute_error_angle(desired_angle, actual_angle):
+    def compute_error_angle(self, desired_angle, actual_angle):
         """Returns error angle in range -p < error < p"""
-        error = desired_ange - actual_angle
+        error = desired_angle - actual_angle
         if (abs(error) > math.pi):
             if(error > 0):
                 error = error - 2 * math.pi
