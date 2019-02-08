@@ -198,8 +198,14 @@ void inch_forward(int delay_time){
 void drive(float dir, float pace) {
   float right_speed, left_speed;
 
-  if(dir < 2.1 and dir > 1.9){
-    open_flap();
+  //gate management code
+  if(abs(dir) < 2.1 and abs(dir) > 1.9){
+    if(dir > 0){
+      open_flap();
+    }
+    else{
+      close_flap();
+    }
     return;
   }
   

@@ -39,6 +39,16 @@ class Arduino_Connection:
         return block_state
 
 
+    def close_back_gate(self):
+        """Send command to close"""
+        self.send_line('-2')
+
+
+    def open_back_gate(self):
+        """Send command to open back gate"""
+        self.send_line('2')
+
+
     def send_line(self, message):
         """Send given message over serial"""
         #append terminator '&'
