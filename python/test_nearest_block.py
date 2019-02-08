@@ -23,7 +23,7 @@ def run():
     
     while 1:
         position, robot_angle, frame = camera.get_robot_position(robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
-        blocks, blocks_frame = camera.get_block_coords([91, 114])
+        blocks, blocks_frame = camera.get_block_coords([95, 105])
         cv2.imshow('blocks frame', blocks_frame)
         nav = Navigate()
         block_data = None

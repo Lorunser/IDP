@@ -9,11 +9,14 @@ class Navigate:
 
     def go_to_point(self, position, robot_angle, point):
         distance = math.sqrt((point[0]-position[0])**2 + (point[1]-position[1])**2)
-        if distance > 30:
-            relative_angle = robot_angle - math.atan2(point[1] - position[1], point[0] - position[0])
-            return relative_angle, False
+        if distance > 50:
+            if point[0]-position[0] != 0:
+                desired_angle = math.atan2((point[1] - position[1]), (point[0] - position[0]))
+            #print(point[1]-position[1])
+            #print(point[0]-position[0])
+            return desired_angle, False
         else:
-            return True
+            return 0, True
 
     def go_to_corner(self, position, robot_angle):
         if position[0]>550:

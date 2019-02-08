@@ -24,14 +24,16 @@ def run():
     
     cv2.imshow('frame', frame)
 
-    corner = True
+    corner = False
     while not corner:
         position, robot_angle, frame = camera.get_robot_position(robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+        cv2.circle(frame, (100,200), 3, (255, 0, 0), 2)
         cv2.imshow('frame', frame)
+        print(corner)
         if position:
-            relative_angle, arrived = navigate.go_to_point(position, robot_angle, [500, 200])
-            if not arrived:
-                desired_angle = relative_angle + robot_angle
+            desired_angle, corner = navigate.go_to_point(position, robot_angle, [100, 200])
+            if not corner:
+                print(robot_angle)
                 control(arduino, controller, robot_angle, desired_angle)
         time.sleep(0.1)
         k = cv2.waitKey(5) & 0xFF
@@ -44,7 +46,7 @@ def run():
     
     while 1:
         position, robot_angle, frame = camera.get_robot_position()
-        blocks, blocks_frame = camera.get_block_coords([93, 114])
+        blocks, blocks_frame = camera.get_block_coords([95, 105])
         cv2.imshow('blocks frame', blocks_frame)
 
         block_data = None
@@ -100,7 +102,7 @@ def control(arduino, controller, robot_angle, desired_angle):
     controller.setSetPoint(desired_angle)
     direction = controller.update(robot_angle)
     pace = 1
-    arduino.drive(direction, pace, debug=True)
+    arduino.drive(direction, pace)
     
     
 

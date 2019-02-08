@@ -189,7 +189,9 @@ class Camera:
         if len(centres) > 0:
             position = (centres_x/len(centres), centres_y/len(centres))
             angle = av_angle/len(centres)
-            print(angle)
+            if angle > math.pi:
+                angle = angle - 2 * math.pi
+            #print(angle)
             cv2.circle(frame, (int(position[0]), int(position[1])), 4, (255, 0, 0), 2)
         else:
             position = None
