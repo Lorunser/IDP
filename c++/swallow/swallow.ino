@@ -17,10 +17,10 @@ Servo swiper_servo;
 Servo flap_servo;
 
 //constants
-const int SWIPER_OPEN = 15;
-const int SWIPER_CLOSED = 40;
-const int FLAP_OPEN = 180;
-const int FLAP_CLOSED = 50;
+const int SWIPER_OPEN = 70;
+const int SWIPER_CLOSED = 105;
+const int FLAP_OPEN = 135;
+const int FLAP_CLOSED = 45;
 const int DELAY_TIME = 1500;
 
 //enum constants
@@ -68,15 +68,14 @@ void loop() {
     handle_block();
   }
 
-  /*
-  while(true){
-    open_swiper();
-    close_swiper();
-    open_flap();
-    close_flap();
-  }
-  */
+  //test_servos();
+}
 
+void test_servos(){
+  open_swiper();
+  close_swiper();
+  open_flap();
+  close_flap();
 }
 
 
@@ -86,30 +85,8 @@ void handle_block() {
   //alert pc
   relay_info(BLOCK_DETECTED);
 
-  bool mag_1, mag_2;
-  bool mag_active = false;
-
-  //comment out if necessary
-  mag_1 = digitalRead(MAG_PIN_1);
-  mag_2 = digitalRead(MAG_PIN_2);
-  mag_active = mag_1 or mag_2;
-
-/*
-  int step_time = 50;
-  for(int i = 0; i < 3; i += 1){    
-    mag_1 = digitalRead(MAG_PIN_1);
-    mag_2 = digitalRead(MAG_PIN_2);
-
-    if(mag_1 or mag_2);
-    {
-      mag_active = true;
-    }
-
-    //move on and check again
-    inch_forward(step_time);
-    delay(step_time * 10);
-  }
-  */
+  //determine_actvity state
+  bool mag_active = determine_block_state();
   
   if (mag_active){
     reject_block();
@@ -118,6 +95,48 @@ void handle_block() {
   else {
     accept_block();
   }
+}
+
+bool determine_block_state(){
+  bool mag_1, mag_2;
+  int activity_counter = 0;
+  
+  int step_time = 100;
+  for(int i = 0; i < 3; i += 1){    
+    mag_1 = digitalRead(MAG_PIN_1);
+    mag_2 = digitalRead(MAG_PIN_2);
+    
+    if(mag_1 or mag_2)
+    {
+      activity_counter += 1;
+    }
+
+    //move on and check again
+    inch_forward(step_time);
+    delay(step_time * 5);
+  }
+
+  for(int i = 0; i < 6; i += 1){    
+    mag_1 = digitalRead(MAG_PIN_1);
+    mag_2 = digitalRead(MAG_PIN_2);
+
+    if(mag_1 or mag_2)
+    {
+      activity_counter += 1;
+    }
+
+    //move on and check again
+    inch_backward(step_time);
+    delay(step_time * 5);
+  }
+
+
+  //Serial.println(activity_counter);
+  
+  if(activity_counter > 0){
+    return true;
+  }
+  return false;
 }
 
 void accept_block() {
@@ -132,6 +151,7 @@ void reject_block() {
   close_swiper();
   inch_forward(DELAY_TIME);
   open_swiper();
+  close_swiper();
   relay_info(BLOCK_REJECTED);
 }
 #pragma endregion
@@ -186,6 +206,23 @@ void onwards(){
 
   //turn on amber LED
   digitalWrite(AMBER_LED_FLASHER, HIGH);
+}
+
+void backwards(){
+  left_motor->setSpeed(100);
+  right_motor->setSpeed(100);
+
+  left_motor->run(BACKWARD);
+  right_motor->run(BACKWARD);
+
+  //turn on amber LED
+  digitalWrite(AMBER_LED_FLASHER, HIGH);
+}
+
+void inch_backward(int delay_time){
+  backwards();
+  delay(delay_time);
+  freeze();
 }
 
 void inch_forward(int delay_time){
