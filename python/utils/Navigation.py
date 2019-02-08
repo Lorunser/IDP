@@ -9,7 +9,7 @@ class Navigate:
 
     def go_to_point(self, position, robot_angle, point):
         distance = math.sqrt((point[0]-position[0])**2 + (point[1]-position[1])**2)
-        if distance > 20:
+        if distance > 30:
             if point[0]-position[0] != 0:
                 desired_angle = math.atan2((point[1] - position[1]), (point[0] - position[0]))
             #print(point[1]-position[1])
@@ -49,7 +49,7 @@ class Navigate:
             return False
 
     def blocks_left(self, block_data):
-        for block in blocks:
+        for block in block_data:
             for reject in self.reject_blocks:
                 distance = math.sqrt((block_data[block][0]-reject[0])**2 + (block_data[block][1]-reject[1])**2)
                 if distance > 40:
@@ -74,8 +74,8 @@ class Navigate:
 
     def reject_line(self, block_data):
         for block in block_data:
-            if 520<block[0] and 130<block[1]<430:
-                reject_coords.append((block[0], block[1]))
+            if 520<block_data[block][0] and 130<block_data[block][1]<430:
+                self.reject_blocks.append((block_data[block][0], block_data[block][1]))
 
     def choose_next_block(self, block_data):
         """Return the position and relative angle of the next block to navigate to"""
