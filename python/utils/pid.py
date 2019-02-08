@@ -29,6 +29,7 @@
 More information about PID Controller: http://en.wikipedia.org/wiki/PID_controller
 """
 import time
+import math
 
 class PID:
     """PID Controller
@@ -61,6 +62,16 @@ class PID:
 
         self.output = 0.0
 
+    def compute_error_angle(desired_angle, actual_angle):
+        """Returns error angle in range -p < error < p"""
+        error = desired_ange - actual_angle
+        if (abs(error) > math.pi):
+            if(error > 0):
+                error = error - 2 * math.pi
+            else:
+                error = error + 2 * math.pi
+        return error
+    
     def update(self, feedback_value):
         """Calculates PID value for given reference feedback
 
@@ -74,7 +85,8 @@ class PID:
 
         """
         if feedback_value is not None:
-            error = self.SetPoint - feedback_value
+            #error = self.SetPoint - feedback_value
+            error = self.compute_error_angle(self.SetPoint, feedback_value)
         else:
             return self.output
 
