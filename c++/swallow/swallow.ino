@@ -17,8 +17,8 @@ Servo swiper_servo;
 Servo flap_servo;
 
 //constants
-const int SWIPER_OPEN = 80;
-const int SWIPER_CLOSED = 115;
+const int SWIPER_OPEN = 40;
+const int SWIPER_CLOSED = 120;
 const int FLAP_OPEN = 135;
 const int FLAP_CLOSED = 45;
 const int DELAY_TIME = 1500;
