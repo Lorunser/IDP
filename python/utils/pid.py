@@ -65,11 +65,12 @@ class PID:
     def compute_error_angle(self, desired_angle, actual_angle):
         """Returns error angle in range -p < error < p"""
         error = desired_angle - actual_angle
-        if (abs(error) > math.pi):
-            if(error > 0):
-                error = error - 2 * math.pi
-            else:
-                error = error + 2 * math.pi
+
+        if (error > math.pi):
+            error = error - 2 * math.pi
+        elif (error < - math.pi):
+            error = error + 2 * math.pi
+
         return error
     
     def update(self, feedback_value):
@@ -85,8 +86,8 @@ class PID:
 
         """
         if feedback_value is not None:
-            error = self.SetPoint - feedback_value
-            #error = self.compute_error_angle(self.SetPoint, feedback_value)
+            #error = self.SetPoint - feedback_value
+            error = self.compute_error_angle(self.SetPoint, feedback_value)
         else:
             return self.output
 
