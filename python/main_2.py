@@ -125,6 +125,7 @@ def run():
 
         for block in block_data:
             rejects = navigate.return_rejects()
+            arrived = False
             for reject in rejects:
                 if abs(block_data[block][0]-reject[0])<30 and abs(block_data[block][0]-reject[0])<30:
                     arrived = True
@@ -182,11 +183,11 @@ def run():
         end = False
         while not end:
             position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
-            cv2.circle(frame, (50,450), 3, (255, 0, 0), 2)
+            cv2.circle(frame, (50,500), 3, (255, 0, 0), 2)
             cv2.imshow('frame', frame)
             #print(corner)
             if position:
-                desired_angle, end = navigate.go_to_point(position, robot_angle, [50, 450])
+                desired_angle, end = navigate.go_to_point(position, robot_angle, [50, 500])
                 if not end:
                     #print(robot_angle)
                     control(arduino, controller, robot_angle, desired_angle)
