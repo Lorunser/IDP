@@ -76,6 +76,10 @@ class Navigate:
         for block in block_data:
             if 520<block_data[block][0] and 130<block_data[block][1]<430:
                 self.reject_blocks.append((block_data[block][0], block_data[block][1]))
+        print(self.reject_blocks)
+
+    def return_rejects(self):
+        return self.reject_blocks
 
     def choose_next_block(self, block_data):
         """Return the position and relative angle of the next block to navigate to"""
