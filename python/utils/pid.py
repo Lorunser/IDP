@@ -71,6 +71,12 @@ class PID:
         elif (error < - math.pi):
             error = error + 2 * math.pi
 
+        #print("des")
+        #print(desired_angle)
+        #print("act")
+        #print(actual_angle)
+        #print("err")
+        #print(error)
         return error
     
     def update(self, feedback_value):

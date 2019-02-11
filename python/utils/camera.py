@@ -138,6 +138,9 @@ class Camera:
                     angle = math.atan2(purple_centre_y[i] - green_centre_y[j], purple_centre_x[i] - green_centre_x[j])
                     centres.append((midpoint_x-20*math.sin(angle), midpoint_y+20*math.cos(angle)))
                     angles.append(angle)
+                    print("1")
+                    print(angle)
+                    break
             for j in range(len(orange_centre_x)):
                 if 60 < math.sqrt((purple_centre_x[i]-orange_centre_x[j])**2+(purple_centre_y[i]-orange_centre_y[j])**2) < 90:
                     midpoint_x = (purple_centre_x[i]+orange_centre_x[j])/2
@@ -145,6 +148,9 @@ class Camera:
                     angle = math.atan2(purple_centre_y[i] - orange_centre_y[j], purple_centre_x[i] - orange_centre_x[j]) +0.6
                     centres.append((midpoint_x, midpoint_y))
                     angles.append(angle)
+                    print("2")
+                    print(angle)
+                    break
             for j in range(len(yellow_centre_x)):
                 if 25 < math.sqrt((purple_centre_x[i]-yellow_centre_x[j])**2+(purple_centre_y[i]-yellow_centre_y[j])**2) < 55:
                     midpoint_x = (purple_centre_x[i]+yellow_centre_x[j])/2
@@ -152,6 +158,9 @@ class Camera:
                     angle = math.atan2(purple_centre_y[i] - yellow_centre_y[j], purple_centre_x[i] - yellow_centre_x[j]) + 1.57
                     centres.append((midpoint_x-30*math.cos(angle), midpoint_y-30*math.sin(angle)))
                     angles.append(angle)
+                    print("3")
+                    print(angle)
+                    break
         for i in range(len(green_centre_x)):
             for j in range(len(yellow_centre_x)):
                 if 60 < math.sqrt((green_centre_x[i]-yellow_centre_x[j])**2+(green_centre_y[i]-yellow_centre_y[j])**2) < 90:
@@ -160,6 +169,9 @@ class Camera:
                     angle = math.atan2(green_centre_y[i] - yellow_centre_y[j], green_centre_x[i] - yellow_centre_x[j])
                     centres.append((midpoint_x, midpoint_y))
                     angles.append(angle)
+                    print("4")
+                    print(angle)
+                    break
             for j in range(len(orange_centre_x)):
                 if 25 < math.sqrt((green_centre_x[i]-orange_centre_x[j])**2+(green_centre_y[i]-orange_centre_y[j])**2) < 55:
                     midpoint_x = (green_centre_x[i]+orange_centre_x[j])/2
@@ -167,6 +179,8 @@ class Camera:
                     angle = math.atan2(green_centre_y[i] - orange_centre_y[j], green_centre_x[i] - orange_centre_x[j]) + 1.57
                     centres.append((midpoint_x+30*math.cos(angle), midpoint_y+30*math.sin(angle)))
                     angles.append(angle)
+                    print("5")
+                    print(angle)
         for i in range(len(yellow_centre_x)):
             for j in range(len(orange_centre_x)):
                 if 45 < math.sqrt((yellow_centre_x[i]-orange_centre_x[j])**2+(yellow_centre_y[i]-orange_centre_y[j])**2) < 75:
@@ -175,6 +189,8 @@ class Camera:
                     angle = math.atan2(yellow_centre_y[i] - orange_centre_y[j], yellow_centre_x[i] - orange_centre_x[j])
                     centres.append((midpoint_x+20*math.sin(angle), midpoint_y-20*math.cos(angle)))
                     angles.append(angle)
+                    print("6")
+                    print(angle)
 
         centres_x = 0
         centres_y = 0
@@ -185,12 +201,13 @@ class Camera:
             centres_y += centre[1]
         for angle in angles:
             if angle < 0:
-                angle + 2*math.pi
+                angle += 2*math.pi
             av_angle += angle
+        #angle = angles[0]
         
         if len(centres) > 0:
             position = (centres_x/len(centres), centres_y/len(centres))
-            angle = av_angle/len(centres)
+            angle = av_angle/len(angles)
             if angle > math.pi:
                 angle = angle - 2 * math.pi
             #print(angle)
@@ -267,7 +284,7 @@ def main():
     while True:
         blocks, frame = camera.get_block_coords()
         position, angle, frame2 = camera.get_robot_position()
-        print(angle)
+        #print(angle)
         cv2.rectangle(frame, (25,25), (600,480), (255,0,0), 2)
         cv2.imshow('frame', frame)
         cv2.imshow('frame2', frame2)
