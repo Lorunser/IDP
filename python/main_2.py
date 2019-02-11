@@ -22,7 +22,7 @@ def run():
     #setup controller
     KP = 0.75
     KI = 0
-    KD = 0.5
+    KD = 0.75
 
     controller = PID(KP, KI, KD)
     camera = Camera(webcam_number=1, return_frame=True)
@@ -32,7 +32,9 @@ def run():
     
     cv2.imshow('frame', frame)
 
-    blocks, blocks_frame = camera.get_block_coords()#[95, 105])
+    blocks = None
+    while blocks == None:
+        blocks, blocks_frame = camera.get_block_coords()#[95, 105])
     block_data = navigate.calculate_distances_angles(blocks, position, robot_angle)
     navigate.reject_line(block_data)
 
@@ -122,7 +124,13 @@ def run():
         cv2.imshow('frame', frame)
 
         for block in block_data:
-            arrived = False
+            rejects = navigate.return_rejects()
+            for reject in rejects:
+                if abs(block_data[block][0]-reject[0])<30 and abs(block_data[block][0]-reject[0])<30:
+                    arrived = True
+                    break
+                else:
+                    arrived = False
             while not arrived:
                 position, robot_angle, frame = camera.get_robot_position(robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
                 cv2.circle(frame, (int(block_data[block][0]),int(block_data[block][1])), 3, (255, 0, 0), 2)
