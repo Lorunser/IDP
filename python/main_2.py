@@ -22,7 +22,7 @@ def run():
     #setup controller
     KP = 0.75
     KI = 0
-    KD = 0.75
+    KD = 0.5
 
     controller = PID(KP, KI, KD)
     camera = Camera(webcam_number=1, return_frame=True)
@@ -36,7 +36,7 @@ def run():
     block_data = navigate.calculate_distances_angles(blocks, position, robot_angle)
     navigate.reject_line(block_data)
 
-    corner = False
+    corner = True
     while not corner:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
         cv2.circle(frame, (520,60), 3, (255, 0, 0), 2)
@@ -52,7 +52,7 @@ def run():
         if k == 27:
             break
 
-    top_line = False
+    top_line = True
     while not top_line:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
         cv2.circle(frame, (530,130), 3, (255, 0, 0), 2)
@@ -68,7 +68,7 @@ def run():
         if k == 27:
             break
 
-    mid_line = False
+    mid_line = True
     while not mid_line:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
         cv2.circle(frame, (530,430), 3, (255, 0, 0), 2)
@@ -84,7 +84,7 @@ def run():
         if k == 27:
             break
 
-    bottom_line = False
+    bottom_line = True
     while not bottom_line:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
         cv2.circle(frame, (530,430), 3, (255, 0, 0), 2)
@@ -110,7 +110,7 @@ def run():
         
         cv2.imshow('blocks frame', blocks_frame)
 
-        block_data = None
+        #block_data = None
         
         if blocks and position:
             block_data = navigate.calculate_distances_angles(blocks, position, robot_angle)
@@ -124,7 +124,7 @@ def run():
         for block in block_data:
             arrived = False
             while not arrived:
-                position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+                position, robot_angle, frame = camera.get_robot_position(robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
                 cv2.circle(frame, (int(block_data[block][0]),int(block_data[block][1])), 3, (255, 0, 0), 2)
                 cv2.imshow('frame', frame)
                 #print(corner)
@@ -133,6 +133,10 @@ def run():
                     if not arrived:
                         #print(robot_angle)
                         control(arduino, controller, robot_angle, desired_angle)
+                time.sleep(0.1)
+                k = cv2.waitKey(5) & 0xFF
+                if k == 27:
+                    break
 
         top_green = False
         while not top_green:
