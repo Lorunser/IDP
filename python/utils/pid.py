@@ -85,8 +85,8 @@ class PID:
 
         """
         if feedback_value is not None:
-            #error = self.SetPoint - feedback_value
-            error = self.compute_error_angle(self.SetPoint, feedback_value)
+            error = self.SetPoint - feedback_value
+            #error = self.compute_error_angle(self.SetPoint, feedback_value)
         else:
             return self.output
 
