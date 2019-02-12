@@ -4,9 +4,13 @@
 #include "utility/Adafruit_MS_PWMServoDriver.h"
 #include <Servo.h>
 
+#pragma region 
 //variables
 String data;
 bool block_present;
+bool received_commands = false;
+unsigned long previous_millis = 0;
+int wait_time = 5000;
 
 //initialise motors
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
@@ -37,7 +41,7 @@ const byte LDR_PIN = 4;
 //output pins
 const byte RED_LED_FLASHER = 5;
 const byte AMBER_LED_FLASHER = 6;
-
+#pragma endregion
 
 void setup() {
   Serial.begin(9600);
@@ -66,6 +70,13 @@ void loop() {
   if(block_present){
     freeze();
     handle_block();
+  }
+
+  if(received_commands){
+    if(millis() > previous_millis + wait_time){
+      previous_millis = millis();
+      backwards();
+    }
   }
 
   //test_servos();
@@ -306,6 +317,8 @@ void serialEvent() {
     // data format = "dir,pace"
     // -1 < dir < 1 & -1 < pace < 1
     data = Serial.readStringUntil('&');
+    received_commands = true;
+    previous_millis = millis();
   }
     comma_index = data.indexOf(',');
 
