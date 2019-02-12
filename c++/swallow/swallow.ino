@@ -17,10 +17,10 @@ Servo swiper_servo;
 Servo flap_servo;
 
 //constants
-const int SWIPER_OPEN = 40;
-const int SWIPER_CLOSED = 120;
+const int SWIPER_OPEN = 70;
+const int SWIPER_CLOSED = 110;
 const int FLAP_OPEN = 135;
-const int FLAP_CLOSED = 45;
+const int FLAP_CLOSED = 50;
 const int DELAY_TIME = 1500;
 
 //enum constants
