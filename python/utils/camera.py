@@ -8,6 +8,9 @@ class Camera:
 
     def __init__(self, webcam_number, return_frame=False):
         cap = cv2.VideoCapture(webcam_number)  # 0 for internal, 1 for external
+        cap.set(10, 128) # brightness
+        cap.set(11, 128) # contrast
+        cap.set(12, 128) # saturation
         self.capture = cap
         self.return_frame = return_frame
 
@@ -280,7 +283,7 @@ class Camera:
 
 
 def main():
-    camera = Camera(0, True)
+    camera = Camera(1, True)
     while True:
         blocks, frame = camera.get_block_coords()
         position, angle, frame2 = camera.get_robot_position()
