@@ -192,6 +192,7 @@ void close_flap(){
   freeze();
   flap_servo.write(FLAP_CLOSED);
   delay(500);
+  received_commands = false;
 }
 #pragma endregion
 
