@@ -21,7 +21,7 @@ def run():
 
     #setup controller
     KP = 0.75
-    KI = 0
+    KI = 0.1
     KD = 0.75
 
     controller = PID(KP, KI, KD)
@@ -38,14 +38,14 @@ def run():
     block_data = navigate.calculate_distances_angles(blocks, position, robot_angle)
     navigate.reject_line(block_data)
 
-    corner = True
+    corner = False
     while not corner:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
-        cv2.circle(frame, (520,60), 3, (255, 0, 0), 2)
+        cv2.circle(frame, (500,60), 3, (255, 0, 0), 2)
         cv2.imshow('frame', frame)
         #print(corner)
         if position:
-            desired_angle, corner = navigate.go_to_point(position, robot_angle, [520, 60])
+            desired_angle, corner = navigate.go_to_point(position, robot_angle, [500, 60])
             if not corner:
                 #print(robot_angle)
                 control(arduino, controller, robot_angle, desired_angle)
@@ -54,14 +54,14 @@ def run():
         if k == 27:
             break
 
-    top_line = True
+    top_line = False
     while not top_line:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
-        cv2.circle(frame, (530,130), 3, (255, 0, 0), 2)
+        cv2.circle(frame, (520,130), 3, (255, 0, 0), 2)
         cv2.imshow('frame', frame)
         #print(corner)
         if position:
-            desired_angle, top_line = navigate.go_to_point(position, robot_angle, [530, 130])
+            desired_angle, top_line = navigate.go_to_point(position, robot_angle, [520, 130])
             if not top_line:
                 #print(robot_angle)
                 control(arduino, controller, robot_angle, desired_angle)
@@ -70,14 +70,14 @@ def run():
         if k == 27:
             break
 
-    mid_line = True
+    mid_line = False
     while not mid_line:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
-        cv2.circle(frame, (530,430), 3, (255, 0, 0), 2)
+        cv2.circle(frame, (520,430), 3, (255, 0, 0), 2)
         cv2.imshow('frame', frame)
         #print(corner)
         if position:
-            desired_angle, mid_line = navigate.go_to_point(position, robot_angle, [530, 280])
+            desired_angle, mid_line = navigate.go_to_point(position, robot_angle, [520, 280])
             if not mid_line:
                 #print(robot_angle)
                 control(arduino, controller, robot_angle, desired_angle)
@@ -86,14 +86,14 @@ def run():
         if k == 27:
             break
 
-    bottom_line = True
+    bottom_line = False
     while not bottom_line:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
-        cv2.circle(frame, (530,430), 3, (255, 0, 0), 2)
+        cv2.circle(frame, (520,430), 3, (255, 0, 0), 2)
         cv2.imshow('frame', frame)
         #print(corner)
         if position:
-            desired_angle, bottom_line = navigate.go_to_point(position, robot_angle, [530, 430])
+            desired_angle, bottom_line = navigate.go_to_point(position, robot_angle, [520, 430])
             if not bottom_line:
                 #print(robot_angle)
                 control(arduino, controller, robot_angle, desired_angle)
@@ -196,6 +196,7 @@ def run():
             if k == 27:
                 break
         arduino.drive(0,0)
+        arduino.close_back_gate()
         break
 
         time.sleep(0.1)
