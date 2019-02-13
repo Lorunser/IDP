@@ -10,7 +10,7 @@ class Camera:
         cap = cv2.VideoCapture(webcam_number)  # 0 for internal, 1 for external
         cap.set(10, 128) # brightness
         cap.set(11, 128) # contrast
-        cap.set(12, 128) # saturation
+        cap.set(12, 200) # saturation
         self.capture = cap
         self.return_frame = return_frame
 

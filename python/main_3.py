@@ -96,17 +96,38 @@ def run():
 
     for i in range(50):
         position, robot_angle, frame = camera.get_robot_position()
+        cv2.imshow('frame', frame)
         if robot_angle:
             control(arduino, controller, robot_angle, -math.pi)
         time.sleep(0.1)
-    arduino.open_back_gate()
+    
     arduino.turn_out_left()
+    time.sleep(2)
+    arduino.open_back_gate()
 
-    while position[1]< 350:
+    green = False
+    while not green:
+        position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
+        cv2.circle(frame, (70,400), 3, (255, 0, 0), 2)
+        cv2.imshow('frame', frame)
+        #print(corner)
+        if position:
+            desired_angle, green = navigate.go_to_point(position, robot_angle, [70, 400])
+            if not green:
+                #print(robot_angle)
+                control(arduino, controller, robot_angle, desired_angle)
+        time.sleep(0.1)
+        k = cv2.waitKey(5) & 0xFF
+        if k == 27:
+            break
+
+    while position[1]< 370:
         position, robot_angle, frame = camera.get_robot_position()
+        cv2.imshow('frame', frame)
         while position == None:
             position, robot_angle, frame = camera.get_robot_position()
         time.sleep(0.1)
+
 
     arduino.close_back_gate()
 
@@ -126,13 +147,12 @@ def run():
         if k == 27:
             break
 
-    for i in range(40):
+    for i in range(50):
         position, robot_angle, frame = camera.get_robot_position()
         cv2.imshow('frame', frame)
         if robot_angle:
-            control(arduino, controller, robot_angle, -math.pi)
+            control(arduino, controller, robot_angle, 0)
         time.sleep(0.1)
-    arduino.open_back_gate()
     arduino.turn_out_right()
 
     while position[1]< 430:
@@ -140,12 +160,13 @@ def run():
         cv2.imshow('frame', frame)
         while position == None:
             position, robot_angle, frame = camera.get_robot_position()
+        control(arduino, controller, robot_angle, 1.57)
         time.sleep(0.1)
 
     top_green = False
     while not top_green:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
-        cv2.circle(frame, (50,200), 3, (255, 0, 0), 2)
+        cv2.circle(frame, (75,200), 3, (255, 0, 0), 2)
         cv2.imshow('frame', frame)
         #print(corner)
         if position:
@@ -158,17 +179,22 @@ def run():
         if k == 27:
             break
 
-    for i in range(30):
+    for i in range(50):
         position, robot_angle, frame = camera.get_robot_position()
         cv2.imshow('frame', frame)
-        control(arduino, controller, robot_angle, -math.pi)
+        if robot_angle:
+            control(arduino, controller, robot_angle, -math.pi)
         time.sleep(0.1)
-    arduino.open_back_gate()
+    
     arduino.turn_out_left()
+    time.sleep(2)
+    arduino.open_back_gate()
 
-    while position[1]< 350:
+    while position[1]< 370:
         position, robot_angle, frame = camera.get_robot_position()
         cv2.imshow('frame', frame)
+        while position == None:
+            position, robot_angle, frame = camera.get_robot_position()
         time.sleep(0.1)
 
     end = False
