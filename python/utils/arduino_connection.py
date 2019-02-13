@@ -55,6 +55,16 @@ class Arduino_Connection:
         message = message + '&'
         self.serial_connection.write(message.encode('ASCII'))
 
+
+    def turn_out_right(self):
+        """Go from hitting wall to parallel"""
+        self.drive(0,-0.5)
+        time.sleep(1)
+        self.drive(1,0.5)
+        time.sleep(0.3)
+        self.drive(0.4,0.5)
+        time.sleep(0.4)
+        
     
     def drive(self, direction, pace, debug=False):
         """Send appropriate motor controls after checking"""
