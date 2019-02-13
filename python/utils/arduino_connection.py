@@ -59,11 +59,11 @@ class Arduino_Connection:
     def turn_out_right(self):
         """Go from hitting wall to parallel"""
         self.drive(0,-0.5)
-        time.sleep(1)
+        time.sleep(0.8)
         self.drive(1,0.5)
-        time.sleep(1.5)
-        self.drive(0.4,0.5)
-        time.sleep(3.4)
+        time.sleep(1.8)
+        self.drive(0.3,0.5)
+        time.sleep(2)
         self.drive(-0.02,1)
 
     
