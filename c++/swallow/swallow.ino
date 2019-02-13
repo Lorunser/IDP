@@ -10,7 +10,7 @@ String data;
 bool block_present;
 bool received_commands = false;
 unsigned long previous_millis = 0;
-int wait_time = 10000;
+int wait_time = 5000;
 
 //initialise motors
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
