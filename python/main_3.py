@@ -129,7 +129,7 @@ def run():
         time.sleep(0.1)
 
 
-    line = False
+    line = True
     if line:
         arduino.close_back_gate()
 
