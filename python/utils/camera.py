@@ -10,11 +10,11 @@ class Camera:
         cap = cv2.VideoCapture(webcam_number)  # 0 for internal, 1 for external
         cap.set(10, 128) # brightness
         cap.set(11, 128) # contrast
-        cap.set(12, 200) # saturation
+        cap.set(12, 150) # saturation
         self.capture = cap
         self.return_frame = return_frame
 
-    def get_robot_position(self, robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [26, 40]]), min_block_size=10, max_block_size=50): # green, pink, orange, yellow
+    def get_robot_position(self, robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [26, 36]]), min_block_size=10, max_block_size=50): # green, pink, orange, yellow
         """returns position and angle of robot
         (x_coord, y_coord), angle_in_deg"""
         _, frame = self.capture.read()
