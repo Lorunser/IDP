@@ -8,9 +8,9 @@ class Camera:
 
     def __init__(self, webcam_number, return_frame=False):
         cap = cv2.VideoCapture(webcam_number)  # 0 for internal, 1 for external
-        cap.set(10, 128) # brightness
+        cap.set(10, 120) # brightness
         cap.set(11, 128) # contrast
-        cap.set(12, 150) # saturation
+        cap.set(12, 160) # saturation
         self.capture = cap
         self.return_frame = return_frame
 

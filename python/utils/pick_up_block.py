@@ -1,3 +1,5 @@
+"""NOT USED"""
+
 class pick_up:
     def __init__(self):
         self.test = None

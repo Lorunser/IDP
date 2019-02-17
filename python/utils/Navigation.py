@@ -8,6 +8,7 @@ class Navigate:
         self.reject_blocks = []
 
     def go_to_point(self, position, robot_angle, point):
+        """Navigate the robot to a specified point and return true or false as to whether it has arrived"""
         distance = math.sqrt((point[0]-position[0])**2 + (point[1]-position[1])**2)
         if distance > 30:
             if point[0]-position[0] != 0:
@@ -19,6 +20,7 @@ class Navigate:
             return 0, True
 
     def go_to_corner(self, position, robot_angle):
+        """NOT USED"""
         if position[0]>550:
             desired_angle = 1.57
             control(arduino, controller, robot_angle, desired_angle)
@@ -34,6 +36,7 @@ class Navigate:
             return False
 
     def got_to_line(self, position, robot_angle):
+        """NOT USED"""
         if position[1]>200:
             desired_angle = 1.57
             control(arduino, controller, robot_angle, desired_angle)
@@ -49,6 +52,7 @@ class Navigate:
             return False
 
     def blocks_left(self, block_data):
+        """NOT USED"""
         for block in block_data:
             for reject in self.reject_blocks:
                 distance = math.sqrt((block_data[block][0]-reject[0])**2 + (block_data[block][1]-reject[1])**2)
@@ -73,6 +77,7 @@ class Navigate:
         return block_data
 
     def reject_line(self, block_data):
+        """Remove blocks on line from list of blocks as positions already known"""
         for block in block_data:
             if 520<block_data[block][0] and 130<block_data[block][1]<430:
                 self.reject_blocks.append((block_data[block][0], block_data[block][1]))
@@ -83,6 +88,7 @@ class Navigate:
 
     def choose_next_block(self, block_data):
         """Return the position and relative angle of the next block to navigate to"""
+        """NOT USED"""
         for block in block_data:
             data = block_data[block]
             score = 0
@@ -106,6 +112,7 @@ class Navigate:
 
     def add_block_to_rejects(self, block_data, position, angle):
         """Detect rejected block when dropped behind robot and record coordinates"""
+        """NOT USED"""
         reject_coords = []
         for block in block_data:
             print(block_data[block][2]<150)
@@ -121,6 +128,7 @@ class Navigate:
 
     def block_in_range(self, best_block, block_data, position, angle):
         """Detect if block is in pickup range"""
+        """NOT USED"""
         if block_data[best_block][2]<150 and abs(block_data[best_block][3])<0.6:
             return True
         else:

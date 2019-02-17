@@ -54,6 +54,7 @@ def run():
             
     cv2.imshow('frame', frame)
 
+    """Go to all blocks that are randomly scattered"""
     for block in block_data:
         rejects = navigate.return_rejects()
         arrived = False
@@ -68,7 +69,7 @@ def run():
             cv2.circle(frame, (int(block_data[block][0]),int(block_data[block][1])), 3, (255, 0, 0), 2)
             cv2.imshow('frame', frame)
             #print(corner)
-            if position:
+            if position and robot_angle:
                 desired_angle, arrived = navigate.go_to_point(position, robot_angle, [int(block_data[block][0]),int(block_data[block][1])])
                 if not arrived:
                     #print(robot_angle)
@@ -78,6 +79,7 @@ def run():
             if k == 27:
                 break
 
+    """Drop off blocks"""
     top_green = False
     while not top_green:
         position, robot_angle, frame = camera.get_robot_position()#robot_position_colour_bounds=np.array([[43, 70], [145, 171], [0, 8], [15, 15]]))
@@ -128,8 +130,8 @@ def run():
             position, robot_angle, frame = camera.get_robot_position()
         time.sleep(0.1)
 
-
-    line = True
+    """Set to True to try get blocks on line or False to ignore them"""
+    line = False
     if line:
         arduino.close_back_gate()
 
